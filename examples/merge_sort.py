@@ -1,4 +1,6 @@
 #!/usr/bin/env python3
+import sys
+from time import sleep
 
 # taken from https://www.geeksforgeeks.org/python-program-for-merge-sort/
 
@@ -59,11 +61,13 @@ def mergeSort(arr, l, r, deep=""):
     mergeSort(arr, m+1, r, deep=deep)
     print(f"{deep}exit partition rigth {m+1} {r}")
     print(f"{deep}merge {l}->{m}<-{r}")
+    sys.stdout.flush()
+    sleep(1)
     merge(arr, l, m, r, deep=deep)
 
 
 # Driver code to test above
-arr = [12, 11, 13, 5, 6, 7, 1, 2, 3, 4, 8, 9, 10]
+arr = [12, 11, 13, 5, 6, 7, 1, 2, 3, 4, 8, 9, 10, 12, 11, 13, 5, 6, 7, 1]
 
 # print("Given array is:\n", arr)
 

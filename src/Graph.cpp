@@ -1,9 +1,50 @@
 #include <vector>
 #include <iostream>
+#include <sstream>
 #include "Graph.h"
 
 void Graph::execute(std::string operation) {
-    std::cout << "executing " << operation << "\n";
+    if (operation.empty()) return;
+    std::istringstream iss(operation);
+    std::string command;
+    iss >> command;
+
+    if (command == "swap") {
+        long int a, b;
+        iss >> a >> b;
+        if (iss.fail()) {
+            throw std::runtime_error("error executing swap command: " + operation);
+        }
+        // check for index out of range
+        if (a < 0 || b < 0) {
+            throw std::runtime_error("swap: out of range");
+        }
+
+        std::cout << "executing " << operation << "\n";
+        this->swap(static_cast<size_t>(a), static_cast<size_t>(b));
+    }
+    else {
+        std::cout << "unknown operation: " << operation << "\n";
+    }
+}
+
+void Graph::swap(size_t a, size_t b) {
+    size_t bars_num = m_bars.size();
+    if (a >= bars_num || b >= bars_num) {
+        throw std::runtime_error("swap: out of range");
+    }
+
+    Bar &bar_a = m_bars[a];
+    Bar &bar_b = m_bars[b];
+
+    sf::Vector2f bar_a_pos = bar_a.getPosition();
+    sf::Vector2f bar_b_pos = bar_b.getPosition();
+    bar_a.setPosition({ bar_b_pos.x, bar_a_pos.y });
+    bar_b.setPosition({ bar_a_pos.x, bar_b_pos.y });
+    // colorize
+    bar_a.setState(Bar::state::Swapping);
+    bar_b.setState(Bar::state::Swapping);
+    std::swap(bar_a, bar_b);
 }
 
 Graph::Graph(int bars_number) : m_bars(bars_number) { }
@@ -34,5 +75,11 @@ void Graph::resize(sf::Vector2f old_win_size, sf::Vector2f new_win_size) {
 void Graph::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     for (auto& bar : m_bars) {
         target.draw(bar, states);
+    }
+}
+
+void Graph::refreshBarStates() {
+    for (auto& bar : m_bars) {
+        bar.refreshState();
     }
 }

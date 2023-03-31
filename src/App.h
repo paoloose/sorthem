@@ -6,9 +6,10 @@
 class SorthemApp {
     sf::RenderWindow m_window;
     bool m_sorting = false;
+    // Graph object. Must lock the mutex while accesing to it
     Graph m_graph;
+    std::mutex m_graph_mutex;
     std::vector<std::string> operations;
-    std::mutex m_mutex;
     sf::Event m_event;
 
 public:

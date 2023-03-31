@@ -28,4 +28,7 @@ class Graph : public sf::Drawable {
      * @brief Draws the entire graph.
     */
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+    void swap(size_t a, size_t b);
+    void refreshBarStates();
 };

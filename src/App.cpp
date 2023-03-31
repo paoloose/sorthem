@@ -4,9 +4,11 @@
 #include <mutex>
 #include "App.h"
 
+#define N_ELEMENTS 48
+
 SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
     m_window(win_mode, "sorthem", style),
-    m_graph(1000)
+    m_graph(N_ELEMENTS)
 {
     m_graph.constructRectangles(m_window.getView().getSize());
 }
@@ -16,11 +18,14 @@ void SorthemApp::readOnThread(FILE* pipe) {
     char buffer[256];
     while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
         // Send output to main thread
-        std::string output = buffer;
-        if (m_mutex.try_lock()) {
-            operations.push_back(output);
-            std::cout << "pushing: " << output << "\n";
-            m_mutex.unlock();
+        std::string operation = buffer;
+        if (m_graph_mutex.try_lock()) {
+            /* clear previous states */
+            m_graph.refreshBarStates();
+            /* execute */
+            std::cout << "executing: " << operation << "\n";
+            m_graph.execute(operation);
+            m_graph_mutex.unlock();
         }
     }
     std::cout << "closing pipe\n";
@@ -43,7 +48,7 @@ void SorthemApp::handleEvent() {
             /* open the program once */
             m_sorting = true;
             // Start child process and redirect its stdout to a pipe
-            FILE* pipe = popen("python3 examples/merge_sort.py", "r");
+            FILE* pipe = popen("node ./examples/bubble_sort.js", "r");
 
             // Start thread to read output from pipe
             std::thread read_thread(&SorthemApp::readOnThread, this, pipe);
@@ -60,14 +65,15 @@ void SorthemApp::mainLoop() {
 
         /* interact with input (UI) */
         /* read operations and execute operations */
-        if (m_mutex.try_lock()) {
-            for (auto& operation : operations) {
-                std::cout << "popping: " << operation << "\n";
-                m_graph.execute(operation);
-            }
-            operations.clear();
-            m_mutex.unlock();
-        }
+        // moved to the read_thread
+        // if (m_mutex.try_lock()) {
+        //     for (auto& operation : operations) {
+        //         std::cout << "popping: " << operation << "\n";
+        //         m_graph.execute(operation);
+        //     }
+        //     operations.clear();
+        //     m_mutex.unlock();
+        // }
         /* update UI */
         m_window.clear();
 

@@ -4,20 +4,23 @@ compiler="g++"
 flags="-Wall -Wextra -pedantic"
 libs="-lsfml-graphics -lsfml-window -lsfml-system"
 bin_name="sorthem"
+build_dir="./build"
 
 set -e
 set -x
 
-objs=$(find ./src -name "*.cpp")
+units=$(find ./src -name "*.cpp")
 
-for obj in $objs; do
-    $compiler -c $obj -o ${obj%.cpp}.o $flags
+mkdir -p $build_dir
+
+for unit in $units; do
+    dest=$build_dir/$(basename $unit .cpp).o
+    $compiler -c $unit -o $dest $flags
 done
 
-objs=$(find ./src -name "*.o")
-
-$compiler $objs -o $bin_name $flags $libs
+objs=$(find $build_dir -name "*.o")
+$compiler $objs -o $build_dir/$bin_name $flags $libs
 
 if [ $1 = "run" ]; then
-    ./$bin_name
+    ./$build_dir/$bin_name
 fi

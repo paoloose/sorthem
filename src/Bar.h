@@ -7,8 +7,8 @@ class Bar : public sf::Drawable {
   private:
     sf::RectangleShape m_shape;
     state m_state;
-    sf::Color m_default_color = sf::Color::White;
   public:
+    inline static sf::Color default_color = sf::Color::White;
     Bar();
 
     void setSize(sf::Vector2f new_size);
@@ -26,11 +26,12 @@ class Bar : public sf::Drawable {
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     enum class state : short {
-        Swapping = 0,
+        Iddle = 0,
+        Swapping,
         Getting,
         Setting,
         Comparing,
 
-        count
+        Count
     };
 };

@@ -1,8 +1,9 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
 #include "Bar.h"
 
-Bar::Bar() : m_shape() {
-    m_shape.setFillColor(m_default_color);
+Bar::Bar() : m_shape(), m_state(Bar::state::Iddle) {
+    m_shape.setFillColor(Bar::default_color);
 }
 
 void Bar::setSize(sf::Vector2f new_size) {
@@ -24,7 +25,12 @@ void Bar::setColor(sf::Color color) {
 }
 
 void Bar::setState(Bar::state state) {
-    switch (state) {
+    m_state = state;
+    switch (m_state) {
+    case Bar::state::Iddle: {
+        m_shape.setFillColor(Bar::default_color);
+        break;
+    }
     case Bar::state::Swapping: {
         m_shape.setFillColor(sf::Color::Red);
         break;
@@ -37,7 +43,7 @@ void Bar::setState(Bar::state state) {
 void Bar::refreshState() {
     switch (m_state) {
     case Bar::state::Swapping: {
-        m_shape.setFillColor(m_default_color);
+        setState(Bar::state::Iddle);
         break;
     }
     default:

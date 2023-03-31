@@ -2,9 +2,10 @@
 #include <thread>
 #include <iostream>
 #include <mutex>
+#include <chrono>
 #include "App.h"
 
-#define N_ELEMENTS 48
+#define N_ELEMENTS 72
 
 SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
     m_window(win_mode, "sorthem", style),
@@ -13,6 +14,7 @@ SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
     m_graph.constructRectangles(m_window.getView().getSize());
 }
 
+// TODO: there is a delay on fgets when the last operation is executed
 void SorthemApp::readOnThread(FILE* pipe) {
     /* open program */
     char buffer[256];
@@ -29,6 +31,7 @@ void SorthemApp::readOnThread(FILE* pipe) {
         }
     }
     std::cout << "closing pipe\n";
+    m_graph.refreshBarStates();
     pclose(pipe);
     m_sorting = false;
 }

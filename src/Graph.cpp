@@ -20,7 +20,6 @@ void Graph::execute(std::string operation) {
             throw std::runtime_error("swap: out of range");
         }
 
-        std::cout << "executing " << operation << "\n";
         this->swap(static_cast<size_t>(a), static_cast<size_t>(b));
     }
     else {

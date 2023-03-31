@@ -62,7 +62,7 @@ def mergeSort(arr, l, r, deep=""):
     print(f"{deep}exit partition rigth {m+1} {r}")
     print(f"{deep}merge {l}->{m}<-{r}")
     sys.stdout.flush()
-    sleep(1)
+    sleep(.1)
     merge(arr, l, m, r, deep=deep)
 
 

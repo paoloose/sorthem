@@ -1,5 +1,5 @@
 #include <SFML/Graphics.hpp>
-#include "app.h"
+#include "App.h"
 
 #define WIN_HEIGHT 600
 #define WIN_WIDTH 800

@@ -1,6 +1,10 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
+#include <thread>
+#include <string>
+#include <cstring>
+#include <signal.h> // kill
 #include "Graph.h"
 
 void Graph::execute(std::string operation) {
@@ -46,7 +50,9 @@ void Graph::swap(size_t a, size_t b) {
     std::swap(bar_a, bar_b);
 }
 
-Graph::Graph(int bars_number) : m_bars(bars_number) { }
+Graph::Graph(int bars_number, const sf::View* win_view) :
+    m_bars(bars_number), m_win_view(win_view)
+{ }
 
 void Graph::constructRectangles(sf::Vector2f win_size) {
     size_t count = m_bars.size();
@@ -81,4 +87,113 @@ void Graph::refreshBarStates() {
     for (auto& bar : m_bars) {
         bar.refreshState();
     }
+}
+
+void Graph::loadDataFromProcess(FILE* pipe, bool* loading) {
+    std::thread load_thread(&Graph::loadDataFromProcessThread, this, pipe, loading);
+    load_thread.detach();
+}
+
+/**
+ * Thread to read and load the array data from a pipe process.
+ *
+ * The data will be read from "[" to "]" and must have the form of:
+ *
+ * [ 100 234 23 12.2 1.5 ]
+*/
+void Graph::loadDataFromProcessThread(FILE* pipe, bool* loading) {
+    char buffer[256];
+    // The string where the complete array representation will be loaded
+    std::string str_arr;
+    bool array_started = false;
+    bool array_closed  = false;
+
+    /* Load the date from the pipe */
+
+    // Read until we find a "]" or the end of the pipe
+    // Note that:
+    // - fgets already adds the null terminator
+    // - fgets stops reading when it finds a new line, EOF or the buffer is full
+    while (!array_closed && (fgets(buffer, sizeof(buffer), pipe) != nullptr)) {
+        std::cout << "load: reading: " << buffer << "\n";
+        std::string str(buffer);
+        for (size_t i = 0; i < sizeof(buffer); i++) {
+            if (buffer[i] == ']') {
+                array_closed = true;
+                str_arr += std::string(buffer, i + 1);
+                break;
+            }
+            else if (buffer[i] == '[') {
+                if (array_started) {
+                    throw std::runtime_error("load: bad start of array");
+                }
+                array_started = true;
+                break;
+            }
+        }
+        if (array_started && !array_closed) {
+            str_arr += buffer;
+        }
+    }
+
+    if (!array_closed) {
+        throw std::runtime_error("load: couldn't find end of array");
+    }
+
+    std::cout << "load: array loaded: " << str_arr << "\n";
+
+    /* Parse the data into a vector */
+    // str_arr = "[ 100 234 23 12.2 1.5 ]";
+
+    std::vector<bar_height_t> nums;
+    // We use string streams to parse the data *easily*
+    std::istringstream iss(str_arr);
+    std::string token;
+    array_started  = false;
+    array_closed = false;
+
+    while (!array_closed && !iss.eof()) {
+        iss >> token;
+        if (token == "[") {
+            array_started = true;
+        }
+        else if (token == "]") {
+            if (!array_started) {
+                throw std::runtime_error("load: bad end of array");
+            }
+            array_closed = true;
+        }
+        else {
+            try {
+                bar_height_t num = STR_TO_BAR_HEIGHT_T(token);
+                nums.push_back(num);
+            }
+            catch (...) {
+                // TODO: handle exceptions better (with UI)
+                throw std::runtime_error("load: bad number: " + token + ".");
+            }
+        }
+    }
+
+    /* Refresh the bars */
+
+    bar_height_t max_value = *std::max_element(nums.begin(), nums.end());
+    size_t count = nums.size();
+    m_bars.resize(count);
+    float rects_width = m_win_view->getSize().x / static_cast<float>(count);
+    for (std::size_t i = 0; i < count; i++) {
+        float height = nums[i] / max_value * m_win_view->getSize().y;
+        m_bars[i].setSize({ rects_width, height });
+        m_bars[i].setPosition({ i * rects_width, m_win_view->getSize().y - height });
+    }
+
+    *loading = false;
+
+    // Read the remaining data from the pipe
+    // this is to avoid to send a SIGPIPE signal to the child process
+    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
+        // do nothing
+    }
+    std::cout << "load: finished reading remaining\n";
+    pclose(pipe);
 }

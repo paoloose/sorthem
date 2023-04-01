@@ -14,12 +14,38 @@ SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
     m_graph.constructRectangles(m_window.getView().getSize());
 }
 
-/**
- * This function is the starting point of the read thread.
- *
- * It receives a pipe to the sorting process and starts reading its stdout
- * and executing the sort operations in real time
-*/
+void SorthemApp::mainLoop() {
+    while (m_window.isOpen()) {
+        while (m_window.pollEvent(m_event)) {
+            /* interact with input (UI) */
+            handleEvent();
+        }
+        /* update UI */
+        // TODO: no UI yet
+
+        /* perform operations */
+        if (m_sorting && m_queue_mutex.try_lock()) {
+            // operations per frame
+            int max_operations = MAX_OPERATIONS_PER_FRAME;
+            while (!m_operations_queue.empty() && max_operations--) {
+                m_graph.refreshBarStates();
+                m_graph.execute(m_operations_queue.front());
+                m_operations_queue.pop();
+            }
+            m_queue_mutex.unlock();
+            if (m_operations_queue.empty() && !m_loading_operations) {
+                m_sorting = false;
+                m_graph.refreshBarStates();
+            }
+        }
+
+        m_window.clear();
+        /* draw */
+        m_window.draw(m_graph);
+        m_window.display();
+    }
+}
+
 // TODO: there is a delay on fgets when the last operation is executed
 void SorthemApp::readProcessOperationsThread(FILE* pipe) {
     /* open program */
@@ -74,44 +100,19 @@ void SorthemApp::handleEvent() {
                 std::cerr << "Failed to open process\n";
                 exit(1);
             }
+
             // Starts a thread and detach it to read output from pipe
-            m_graph.loadDataFromProcess(pipe, &m_loading_array_data);
+            std::thread load_thread(
+                &Graph::loadDataFromProcessThread,
+                m_graph,
+                pipe,
+                &m_loading_array_data
+            );
+            load_thread.detach();
         }
         /* Dump array to the program */
         if (m_event.key.code == sf::Keyboard::D && !m_sorting) {
             // non implemented yet
         }
-    }
-}
-
-void SorthemApp::mainLoop() {
-    while (m_window.isOpen()) {
-        while (m_window.pollEvent(m_event)) {
-            /* interact with input (UI) */
-            handleEvent();
-        }
-        /* update UI */
-        // TODO: no UI yet
-
-        /* perform operations */
-        if (m_sorting && m_queue_mutex.try_lock()) {
-            // operations per frame
-            int max_operations = MAX_OPERATIONS_PER_FRAME;
-            while (!m_operations_queue.empty() && max_operations--) {
-                m_graph.refreshBarStates();
-                m_graph.execute(m_operations_queue.front());
-                m_operations_queue.pop();
-            }
-            m_queue_mutex.unlock();
-            if (m_operations_queue.empty() && !m_loading_operations) {
-                m_sorting = false;
-                m_graph.refreshBarStates();
-            }
-        }
-
-        m_window.clear();
-        /* draw */
-        m_window.draw(m_graph);
-        m_window.display();
     }
 }

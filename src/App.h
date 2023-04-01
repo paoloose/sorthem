@@ -38,6 +38,7 @@ public:
     */
     SorthemApp(sf::VideoMode win_mode, sf::Uint32 style);
     ~SorthemApp() = default;
+
     /**
      * @brief Main loop of the Sorthem application.
     */

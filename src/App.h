@@ -3,7 +3,7 @@
 #include <mutex>
 #include "Graph.h"
 
-#define MAX_OPERATIONS_PER_FRAME 1
+#define MAX_OPERATIONS_PER_FRAME 10
 
 class SorthemApp {
     sf::RenderWindow m_window;

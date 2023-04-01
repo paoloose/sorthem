@@ -24,6 +24,8 @@ async function sleep(ms) {
     for (let j = 0; j < arr.length - i - 1; j++) {
       const left  = arr.at(j);
       const right = arr.at(j + 1);
+
+      console.log(`compare ${j} ${j + 1}`)
       if (left > right) {
         console.log(`swap ${j} ${j + 1}`)
         arr[j]     = right;

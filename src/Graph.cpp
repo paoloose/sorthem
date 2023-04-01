@@ -26,19 +26,58 @@ void Graph::execute(std::string operation) {
 
         this->swap(static_cast<size_t>(a), static_cast<size_t>(b));
     }
+    else if (command == "compare") {
+        long int a, b;
+        iss >> a >> b;
+        if (iss.fail()) {
+            throw std::runtime_error("error executing compare command: " + operation);
+        }
+        // check for index out of range
+        if (a < 0 || b < 0) {
+            throw std::runtime_error("compare: out of range");
+        }
+
+        this->compare(static_cast<size_t>(a), static_cast<size_t>(b));
+    }
+    else if (command == "set") {
+        long int a, b;
+        iss >> a >> b;
+        if (iss.fail()) {
+            throw std::runtime_error("error executing set command: " + operation);
+        }
+        // check for index out of range
+        if (a < 0 || b < 0) {
+            throw std::runtime_error("set: out of range");
+        }
+
+        this->set(static_cast<size_t>(a), static_cast<size_t>(b));
+    }
+    else if (command == "get") {
+        long int a;
+        iss >> a;
+        if (iss.fail()) {
+            throw std::runtime_error("error executing get command: " + operation);
+        }
+        // check for index out of range
+        if (a < 0) {
+            throw std::runtime_error("get: out of range");
+        }
+
+        this->get(static_cast<size_t>(a));
+    }
     else {
         std::cout << "unknown operation: " << operation << "\n";
     }
 }
 
-void Graph::swap(size_t a, size_t b) {
+void Graph::swap(size_t index_a, size_t index_b) {
     size_t bars_num = m_bars.size();
-    if (a >= bars_num || b >= bars_num) {
+    if (index_a >= bars_num || index_b >= bars_num) {
         throw std::runtime_error("swap: out of range");
     }
 
-    Bar &bar_a = m_bars[a];
-    Bar &bar_b = m_bars[b];
+    Bar &bar_a = m_bars[index_a];
+    Bar &bar_b = m_bars[index_b];
 
     sf::Vector2f bar_a_pos = bar_a.getPosition();
     sf::Vector2f bar_b_pos = bar_b.getPosition();
@@ -50,8 +89,45 @@ void Graph::swap(size_t a, size_t b) {
     std::swap(bar_a, bar_b);
 }
 
+void Graph::compare(size_t index_a, size_t index_b) {
+    size_t bars_num = m_bars.size();
+    if (index_a >= bars_num || index_b >= bars_num) {
+        throw std::runtime_error("compare: out of range");
+    }
+
+    Bar &bar_a = m_bars[index_a];
+    Bar &bar_b = m_bars[index_b];
+
+    // colorize
+    bar_a.setState(Bar::state::Comparing);
+    bar_b.setState(Bar::state::Comparing);
+}
+void Graph::set(size_t index, bar_height_t value) {
+    size_t bars_num = m_bars.size();
+    if (index >= bars_num) {
+        throw std::runtime_error("set: out of range");
+    }
+
+    Bar &bar = m_bars[index];
+    bar_height_t relative_height = value * m_win_view->getSize().y / m_max_height;
+
+    bar.setSize({ bar.getSize().x, relative_height });
+    bar.setPosition({ bar.getPosition().x, m_win_view->getSize().y - relative_height });
+
+    bar.setState(Bar::state::Setting);
+}
+void Graph::get(size_t index) {
+    size_t bars_num = m_bars.size();
+    if (index >= bars_num) {
+        throw std::runtime_error("get: out of range");
+    }
+    // Just colorize the bar
+    m_bars[index].setState(Bar::state::Getting);
+}
+
 Graph::Graph(int bars_number, const sf::View* win_view) :
-    m_bars(bars_number), m_win_view(win_view)
+    m_bars(bars_number),
+    m_win_view(win_view)
 { }
 
 void Graph::constructRectangles(sf::Vector2f win_size) {
@@ -176,12 +252,12 @@ void Graph::loadDataFromProcessThread(FILE* pipe, bool* loading) {
 
     /* Refresh the bars */
 
-    bar_height_t max_value = *std::max_element(nums.begin(), nums.end());
+    m_max_height = *std::max_element(nums.begin(), nums.end());
     size_t count = nums.size();
     m_bars.resize(count);
     float rects_width = m_win_view->getSize().x / static_cast<float>(count);
     for (std::size_t i = 0; i < count; i++) {
-        float height = nums[i] / max_value * m_win_view->getSize().y;
+        float height = nums[i] / m_max_height * m_win_view->getSize().y;
         m_bars[i].setSize({ rects_width, height });
         m_bars[i].setPosition({ i * rects_width, m_win_view->getSize().y - height });
     }

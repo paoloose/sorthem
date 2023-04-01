@@ -12,6 +12,7 @@ class Graph : public sf::Drawable {
     std::vector<Bar> m_bars;
     // Points to the view of the window
     const sf::View* m_win_view;
+    bar_height_t m_max_height;
   public:
     /**
      * @brief Execute an operation on the sorting graph.
@@ -35,7 +36,10 @@ class Graph : public sf::Drawable {
     */
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-    void swap(size_t a, size_t b);
+    void swap(size_t index_a, size_t index_b);
+    void compare(size_t index_a, size_t index_b);
+    void set(size_t index, bar_height_t absolute_value);
+    void get(size_t index);
     void refreshBarStates();
     void loadDataFromProcess(FILE* pipe, bool* loading);
     void loadDataFromProcessThread(FILE* pipe, bool* loading);

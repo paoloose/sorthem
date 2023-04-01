@@ -51,6 +51,7 @@ void SorthemApp::handleEvent() {
         /* Start sorting (sorting=true, loading_operations=true)*/
         std::cout << std::boolalpha << "sorting: " << m_sorting << "\n" << "loading: " << m_loading_array_data << "\n";
         if (m_event.key.code == sf::Keyboard::Space && !m_sorting && !m_loading_array_data) {
+            std::cout << "\nSORTING...\n\n";
             /* open the program once */
             // Start child process and redirect its stdout to a pipe
             FILE* pipe = popen(m_process_cmd.c_str(), "r");

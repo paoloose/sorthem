@@ -35,6 +35,18 @@ void Bar::setState(Bar::state state) {
         m_shape.setFillColor(sf::Color::Red);
         break;
     }
+    case Bar::state::Getting: {
+        m_shape.setFillColor(sf::Color::Magenta);
+        break;
+    }
+    case Bar::state::Setting: {
+        m_shape.setFillColor(sf::Color::Blue);
+        break;
+    }
+    case Bar::state::Comparing: {
+        m_shape.setFillColor(sf::Color::Green);
+        break;
+    }
     default:
         break;
     }
@@ -42,7 +54,22 @@ void Bar::setState(Bar::state state) {
 
 void Bar::refreshState() {
     switch (m_state) {
+    case Bar::state::Iddle: {
+        break;
+    }
     case Bar::state::Swapping: {
+        setState(Bar::state::Iddle);
+        break;
+    }
+    case Bar::state::Getting: {
+        setState(Bar::state::Iddle);
+        break;
+    }
+    case Bar::state::Setting: {
+        setState(Bar::state::Iddle);
+        break;
+    }
+    case Bar::state::Comparing: {
         setState(Bar::state::Iddle);
         break;
     }

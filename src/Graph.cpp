@@ -115,7 +115,6 @@ void Graph::loadDataFromProcessThread(FILE* pipe, bool* loading) {
     // - fgets already adds the null terminator
     // - fgets stops reading when it finds a new line, EOF or the buffer is full
     while (!array_closed && (fgets(buffer, sizeof(buffer), pipe) != nullptr)) {
-        std::cout << "load: reading: " << buffer << "\n";
         std::string str(buffer);
         for (size_t i = 0; i < sizeof(buffer); i++) {
             if (buffer[i] == ']') {
@@ -140,7 +139,7 @@ void Graph::loadDataFromProcessThread(FILE* pipe, bool* loading) {
         throw std::runtime_error("load: couldn't find end of array");
     }
 
-    std::cout << "load: array loaded: " << str_arr << "\n";
+    // std::cout << "load: array loaded: " << str_arr << "\n";
 
     /* Parse the data into a vector */
     // str_arr = "[ 100 234 23 12.2 1.5 ]";
@@ -188,6 +187,7 @@ void Graph::loadDataFromProcessThread(FILE* pipe, bool* loading) {
     }
 
     *loading = false;
+    std::cout << "load: finished loading data\n";
 
     // Read the remaining data from the pipe
     // this is to avoid to send a SIGPIPE signal to the child process

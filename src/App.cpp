@@ -24,7 +24,6 @@ SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
 void SorthemApp::readProcessOperationsThread(FILE* pipe) {
     /* open program */
     char buffer[512];
-    m_loading_operations = true;
     while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
         // Send output to main thread
         std::string operation = buffer;
@@ -49,7 +48,6 @@ void SorthemApp::handleEvent() {
     }
     else if (m_event.type == sf::Event::KeyPressed) {
         /* Start sorting (sorting=true, loading_operations=true)*/
-        std::cout << std::boolalpha << "sorting: " << m_sorting << "\n" << "loading: " << m_loading_array_data << "\n";
         if (m_event.key.code == sf::Keyboard::Space && !m_sorting && !m_loading_array_data) {
             std::cout << "\nSORTING...\n\n";
             /* open the program once */
@@ -62,13 +60,15 @@ void SorthemApp::handleEvent() {
             }
 
             // Start thread to read output from pipe
+            m_loading_operations = true;
             std::thread read_thread(&SorthemApp::readProcessOperationsThread, this, pipe);
             read_thread.detach();
         }
         /* Load array from the program (loading_array_data=true) */
         if (m_event.key.code == sf::Keyboard::L && !m_loading_array_data && !m_sorting) {
-            std::cout << "loading...\n";
+            std::cout << "\nLOADING DATA...\n\n";
             m_loading_array_data = true;
+
             FILE* pipe = popen(m_process_cmd.c_str(), "r");
             if (pipe == nullptr) {
                 std::cerr << "Failed to open process\n";

@@ -270,6 +270,6 @@ void Graph::loadDataFromProcessThread(FILE* pipe, bool* loading) {
     while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
         // do nothing
     }
-    std::cout << "load: finished reading remaining\n";
+    std::cout << "load: finished reading remaining data\n";
     pclose(pipe);
 }

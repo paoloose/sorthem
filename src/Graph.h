@@ -41,9 +41,20 @@ class Graph : public sf::Drawable {
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     /**
+     * @brief Resets all the bar states to the default state.
+    */
+    void resetBarStates();
+
+    /**
      * @brief Refreshes all the bar states
     */
     void refreshBarStates();
+
+    /**
+     * @brief To indicate that the animation has finished. This will set all the
+     * bars to the default state, and will check if the sorting is correct.
+    */
+    void finishAnimation();
 
     /**
      * @brief The starting point of the load data thread. The data read from the
@@ -64,4 +75,5 @@ class Graph : public sf::Drawable {
     void compare(size_t index_a, size_t index_b);
     void set(size_t index, bar_height_t absolute_value);
     void get(size_t index);
+    void set_mark(size_t index, std::string mark);
 };

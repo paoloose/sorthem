@@ -124,9 +124,37 @@ void Graph::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     }
 }
 
+void Graph::resetBarStates() {
+    for (auto& bar : m_bars) {
+        bar.setState(Bar::state::Iddle);
+    }
+}
+
 void Graph::refreshBarStates() {
     for (auto& bar : m_bars) {
         bar.refreshState();
+    }
+}
+
+void Graph::finishAnimation() {
+    bool is_sorted = true;
+
+    for (size_t i = 0; i < m_bars.size() - 1; i++) {
+        if (m_bars[i].getSize().y > m_bars[i + 1].getSize().y) {
+            is_sorted = false;
+            break;
+        }
+    }
+
+    if (is_sorted) {
+        for (auto& bar : m_bars) {
+            bar.setColor(sf::Color::Green);
+        }
+    }
+    else {
+        for (auto& bar : m_bars) {
+            bar.setColor(sf::Color::Red);
+        }
     }
 }
 

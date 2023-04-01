@@ -36,7 +36,7 @@ void SorthemApp::mainLoop() {
             m_queue_mutex.unlock();
             if (m_operations_queue.empty() && !m_loading_operations) {
                 m_sorting = false;
-                m_graph.refreshBarStates();
+                m_graph.finishAnimation();
             }
         }
 
@@ -102,6 +102,7 @@ void SorthemApp::handleEvent() {
                 exit(1);
             }
 
+            m_graph.resetBarStates();
             // Starts a thread and detach it to read output from pipe
             std::thread load_thread(
                 &Graph::loadDataFromProcessThread,

@@ -4,7 +4,7 @@ compiler="g++"
 flags="-Wall -Wextra -pedantic"
 libs="-lsfml-graphics -lsfml-window -lsfml-system"
 bin_name="sorthem"
-build_dir="./build"
+build_dir="./dist"
 
 set -e
 set -x

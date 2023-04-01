@@ -7,7 +7,8 @@
 
 #define N_ELEMENTS 10
 
-SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
+SorthemApp::SorthemApp(std::string process_cmd, sf::VideoMode win_mode, sf::Uint32 style) :
+    m_process_cmd(process_cmd),
     m_window(win_mode, "sorthem", style),
     m_graph(N_ELEMENTS, &m_window.getView())
 {

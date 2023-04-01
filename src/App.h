@@ -3,9 +3,12 @@
 #include <mutex>
 #include "Graph.h"
 
-#define MAX_OPERATIONS_PER_FRAME 10
+#define MAX_OPERATIONS_PER_FRAME 1
 
 class SorthemApp {
+    // Command to execute the sorting program (currently hardcoded)
+    std::string m_process_cmd;
+
     sf::RenderWindow m_window;
     // Graph object. Must lock the mutex while accesing to it
     Graph m_graph;
@@ -28,15 +31,12 @@ class SorthemApp {
     //  are loaded in a different thread and can finish after the sorting)
     bool m_loading_operations = false;
 
-    // Command to execute the sorting program (currently hardcoded)
-    std::string m_process_cmd = "node ./examples/bubble_sort.js";
-
 public:
     /**
      * @brief Construct a new Sorthem App object.
      * The arguments will be passed to the sf::RenderWindow constructor.
     */
-    SorthemApp(sf::VideoMode win_mode, sf::Uint32 style);
+    SorthemApp(std::string process_cmd, sf::VideoMode win_mode, sf::Uint32 style);
     ~SorthemApp() = default;
 
     /**

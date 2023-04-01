@@ -4,6 +4,8 @@ from time import sleep
 
 # taken from https://www.geeksforgeeks.org/python-program-for-merge-sort/
 
+# WARNING: This example is not ready yet. Partitions are not implemented
+
 def merge(arr, l, m, r, deep=""):
     n1 = m - l + 1
     n2 = r - m

@@ -7,7 +7,7 @@
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        std::cout << "Usage: sorthem <process_cmd>" << std::endl;
+        std::cout << "Usage: sorthem \"<process_cmd>\"\n";
         return 1;
     }
     std::string process_cmd = argv[1];

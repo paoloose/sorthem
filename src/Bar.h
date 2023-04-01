@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <string>
 
 class Bar : public sf::Drawable {
   public:
@@ -7,6 +8,8 @@ class Bar : public sf::Drawable {
   private:
     sf::RectangleShape m_shape;
     state m_state;
+    bool m_with_mark = false;
+    std::string m_mark;
   public:
     inline static sf::Color default_color = sf::Color::White;
     Bar();
@@ -18,8 +21,10 @@ class Bar : public sf::Drawable {
     sf::Vector2f getPosition();
 
     void setColor(sf::Color color);
-
     void setState(Bar::state state);
+
+    std::string getMark();
+    void setMark(std::string mark);
 
     void refreshState();
 

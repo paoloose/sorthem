@@ -69,6 +69,28 @@ void Graph::execute(std::string operation) {
 
         this->get(static_cast<size_t>(a));
     }
+    else if (command == "mark") {
+        long int a;
+        iss >> a;
+        if (iss.fail()) {
+            throw std::runtime_error("error executing mark command: " + operation);
+        }
+
+        std::string mark;
+        iss >> mark;
+        if (mark != "as") {
+            throw std::runtime_error("error: bad syntax. expected: mark <i> as <name>, got: " + operation);
+        }
+
+        iss >> mark;
+        for (auto& bar : m_bars) {
+            if (bar.getMark() == mark) {
+                bar.setMark("");
+            }
+        }
+
+        this->set_mark(static_cast<size_t>(a), mark);
+    }
     else {
         std::cout << "unknown operation: " << operation << "\n";
     }
@@ -123,22 +145,25 @@ void Graph::loadDataFromProcessThread(FILE* pipe, bool* loading) {
     // - fgets stops reading when it finds a new line, EOF or the buffer is full
     while (!array_closed && (fgets(buffer, sizeof(buffer), pipe) != nullptr)) {
         std::string str(buffer);
-        for (size_t i = 0; i < sizeof(buffer); i++) {
-            if (buffer[i] == ']') {
-                array_closed = true;
-                str_arr += std::string(buffer, i + 1);
-                break;
-            }
-            else if (buffer[i] == '[') {
+        for (size_t i = 0; i < str.length(); i++) {
+            if (buffer[i] == '[') {
                 if (array_started) {
                     throw std::runtime_error("load: bad start of array");
                 }
                 array_started = true;
+                continue;
+            }
+            if (buffer[i] == ']') {
+                if (!array_started) {
+                    throw std::runtime_error("load: bad end of array");
+                }
+                array_closed = true;
                 break;
             }
-        }
-        if (array_started && !array_closed) {
-            str_arr += buffer;
+
+            if (array_started) {
+                str_arr += buffer[i];
+            }
         }
     }
 
@@ -147,35 +172,24 @@ void Graph::loadDataFromProcessThread(FILE* pipe, bool* loading) {
     }
 
     /* Parse the data into a vector */
-    // str_arr = "[ 100 234 23 12.2 1.5 ]";
+    // str_arr is like "[ 100 234 23 12.2 1.5 ]";
 
     std::vector<bar_height_t> nums;
     // We use string streams to parse the data *easily*
     std::istringstream iss(str_arr);
-    std::string token;
-    array_started  = false;
-    array_closed = false;
+    std::string str_num;
 
-    while (!array_closed && !iss.eof()) {
-        iss >> token;
-        if (token == "[") {
-            array_started = true;
+    std::cout << "str_arr: " << str_arr << "\n";
+
+    while (iss >> str_num) {
+        std::cout << "token: " << str_num << "\n";
+        try {
+            bar_height_t num = STR_TO_BAR_HEIGHT_T(str_num);
+            nums.push_back(num);
         }
-        else if (token == "]") {
-            if (!array_started) {
-                throw std::runtime_error("load: bad end of array");
-            }
-            array_closed = true;
-        }
-        else {
-            try {
-                bar_height_t num = STR_TO_BAR_HEIGHT_T(token);
-                nums.push_back(num);
-            }
-            catch (...) {
-                // TODO: handle exceptions better (with UI)
-                throw std::runtime_error("load: bad number: " + token + ".");
-            }
+        catch (...) {
+            // TODO: handle exceptions better (with UI)
+            throw std::runtime_error("load: bad number: " + str_num + ".");
         }
     }
 
@@ -260,4 +274,17 @@ void Graph::get(size_t index) {
     }
     // Just colorize the bar
     m_bars[index].setState(Bar::state::Getting);
+}
+
+void Graph::set_mark(size_t index, std::string mark) {
+    size_t bars_num = m_bars.size();
+    if (index >= bars_num) {
+        throw std::runtime_error("set_mark: out of range");
+    }
+
+    for (size_t i = 0; i < bars_num; i++) {
+        m_bars[i].setMark("");
+    }
+    // Just colorize the bar
+    m_bars[index].setMark(mark);
 }

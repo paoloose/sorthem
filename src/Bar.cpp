@@ -24,7 +24,25 @@ void Bar::setColor(sf::Color color) {
     m_shape.setFillColor(color);
 }
 
+std::string Bar::getMark() {
+    return m_mark;
+}
+void Bar::setMark(std::string mark) {
+    if (mark != "") {
+        m_mark = mark;
+        m_with_mark = true;
+        m_shape.setFillColor(sf::Color(255, 165, 0));
+    }
+    else {
+        m_mark = "";
+        m_with_mark = false;
+        setState(Bar::state::Iddle);
+    }
+}
+
 void Bar::setState(Bar::state state) {
+    if (m_with_mark) return;
+
     m_state = state;
     switch (m_state) {
     case Bar::state::Iddle: {
@@ -36,7 +54,7 @@ void Bar::setState(Bar::state state) {
         break;
     }
     case Bar::state::Getting: {
-        m_shape.setFillColor(sf::Color::Magenta);
+        m_shape.setFillColor(sf::Color::Cyan);
         break;
     }
     case Bar::state::Setting: {
@@ -53,6 +71,8 @@ void Bar::setState(Bar::state state) {
 }
 
 void Bar::refreshState() {
+    if (m_with_mark) return;
+
     switch (m_state) {
     case Bar::state::Iddle: {
         break;

@@ -104,7 +104,7 @@ void SorthemApp::handleEvent() {
             // Starts a thread and detach it to read output from pipe
             std::thread load_thread(
                 &Graph::loadDataFromProcessThread,
-                m_graph,
+                &m_graph,
                 pipe,
                 &m_loading_array_data
             );

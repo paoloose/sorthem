@@ -7,8 +7,9 @@
 SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
     m_window(win_mode, "sorthem", style),
     m_graph(&m_window.getView()),
-    m_operations(OPERATIONS_RESERVED_SIZE)
+    m_operations()
 {
+    m_operations.reserve(OPERATIONS_RESERVED_SIZE);
     std::cout << "\nLoading data...\n\n";
     m_graph.loadArrayDataFromStdin();
     m_graph.loadRectsValues();
@@ -42,6 +43,8 @@ void SorthemApp::mainLoop() {
                 }
                 m_graph.refreshBarStates();
                 m_graph.execute(m_operations[m_operation_index]);
+                std::cout << "executing: " << m_operation_index << "\n";
+                std::cout << "executing: " << m_operations.size() << "\n";
                 m_operation_index++;
             }
         }
@@ -58,6 +61,7 @@ void SorthemApp::loadOperationsFromStdin() {
     /* open program */
     std::string operation;
     while (std::getline(std::cin, operation)) {
+        std::cout << operation << std::endl;
         m_operations.push_back(operation);
     }
 }

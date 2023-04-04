@@ -21,7 +21,7 @@ done
 objs=$(find $build_dir -name "*.o")
 $compiler $objs -o $build_dir/$bin_name $flags $libs
 
-if [ $1 = "run" ]; then
+if [ "$1" = "run" ]; then
     shift 1
     cmd=$@
     $build_dir/$bin_name "$cmd"

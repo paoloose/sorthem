@@ -4,39 +4,35 @@
 #include "Graph.h"
 
 #define MAX_OPERATIONS_PER_FRAME 1
+#define OPERATIONS_RESERVED_SIZE 1024
 
 class SorthemApp {
-    // Command to execute the sorting program (currently hardcoded)
-    std::string m_process_cmd;
-
     sf::RenderWindow m_window;
     // Graph object. Must lock the mutex while accesing to it
     Graph m_graph;
     sf::Event m_event;
 
-    // Queue of operations to perform on the graph
-    std::queue<std::string> m_operations_queue;
-    std::mutex m_queue_mutex;
+    // Vector of operations to perform on the graph
+    std::vector<std::string> m_operations;
+    size_t m_operation_index = 0;
 
     /* Application flags */
 
     // Whether the program is sorting and animating the bars
     bool m_sorting = false;
 
-    // Whether the program is loading the array data from the child process
-    bool m_loading_array_data = false;
+    // Whether the program has finished the sorting
+    bool m_finished = false;
 
-    // Whether the program is loading the operations from the child process
-    // (this is not always synchronized with m_sorting, since the operations
-    //  are loaded in a different thread and can finish after the sorting)
-    bool m_loading_operations = false;
+    // Whether the program has laoded the array data from stdin
+    bool m_array_data_loaded = false;
 
 public:
     /**
      * @brief Construct a new Sorthem App object.
      * The arguments will be passed to the sf::RenderWindow constructor.
     */
-    SorthemApp(std::string process_cmd, sf::VideoMode win_mode, sf::Uint32 style);
+    SorthemApp(sf::VideoMode win_mode, sf::Uint32 style);
     ~SorthemApp() = default;
 
     /**
@@ -44,16 +40,18 @@ public:
     */
     void mainLoop();
 
+    /**
+     * @brief Loads the stdin input (array data and operations)
+    */
+    // void loadStdin();
+
 private:
     /**
-     * @brief The starting point of the read-operations thread.
+     * @brief Loads all the operations from stdin to the m_operations vector.
      *
-     * It receives a pipe to the sorting process and starts reading and
-     * executing the sort operations in real time.
-     *
-     * While the thread is running, the m_loading_operations flag is set to true.
+     * No checks are performed on the operations.
     */
-    void readProcessOperationsThread(FILE* pipe);
+    void loadOperationsFromStdin();
 
     /**
      * @brief Handles the events polled by the main loop.

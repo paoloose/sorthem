@@ -59,7 +59,7 @@ With these three lines of code, you now have a **visualizer** for your
 algorithm. You can run it with:
 
 ```bash
-./sorthem "ruby bubble_sort.rb"
+ruby bubble_sort.rb | sorthem
 ```
 
 <!-- TODO: add a gif here -->

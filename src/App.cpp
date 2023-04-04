@@ -1,18 +1,23 @@
 #include <SFML/Graphics.hpp>
-#include <thread>
 #include <iostream>
-#include <mutex>
+#include <sstream>
 #include <chrono>
 #include "App.h"
 
-#define N_ELEMENTS 10
-
-SorthemApp::SorthemApp(std::string process_cmd, sf::VideoMode win_mode, sf::Uint32 style) :
-    m_process_cmd(process_cmd),
+SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
     m_window(win_mode, "sorthem", style),
-    m_graph(N_ELEMENTS, &m_window.getView())
+    m_graph(&m_window.getView()),
+    m_operations(OPERATIONS_RESERVED_SIZE)
 {
-    m_graph.constructRectangles(m_window.getView().getSize());
+    std::cout << "\nLoading data...\n\n";
+    m_graph.loadArrayDataFromStdin();
+    m_graph.loadRectsValues();
+    m_array_data_loaded = true;
+
+    std::cout << "\nLoading operations...\n\n";
+    this->loadOperationsFromStdin();
+
+    std::cout << "Done\n";
 }
 
 void SorthemApp::mainLoop() {
@@ -25,18 +30,19 @@ void SorthemApp::mainLoop() {
         // TODO: no UI yet
 
         /* perform operations */
-        if (m_sorting && m_queue_mutex.try_lock()) {
+        if (m_sorting) {
             // operations per frame
             int max_operations = MAX_OPERATIONS_PER_FRAME;
-            while (!m_operations_queue.empty() && max_operations--) {
+            while (max_operations--) {
+                if (m_operation_index == m_operations.size()) {
+                    m_sorting = false;
+                    m_finished = true;
+                    m_graph.finishAnimation();
+                    break;
+                }
                 m_graph.refreshBarStates();
-                m_graph.execute(m_operations_queue.front());
-                m_operations_queue.pop();
-            }
-            m_queue_mutex.unlock();
-            if (m_operations_queue.empty() && !m_loading_operations) {
-                m_sorting = false;
-                m_graph.finishAnimation();
+                m_graph.execute(m_operations[m_operation_index]);
+                m_operation_index++;
             }
         }
 
@@ -48,19 +54,12 @@ void SorthemApp::mainLoop() {
 }
 
 // TODO: there is a delay on fgets when the last operation is executed
-void SorthemApp::readProcessOperationsThread(FILE* pipe) {
+void SorthemApp::loadOperationsFromStdin() {
     /* open program */
-    char buffer[512];
-    while (fgets(buffer, sizeof(buffer), pipe) != NULL) {
-        // Send output to main thread
-        std::string operation = buffer;
-        m_queue_mutex.lock();
-        m_operations_queue.push(operation);
-        m_queue_mutex.unlock();
+    std::string operation;
+    while (std::getline(std::cin, operation)) {
+        m_operations.push_back(operation);
     }
-    std::cout << "closing pipe\n";
-    m_loading_operations = false;
-    pclose(pipe);
 }
 
 void SorthemApp::handleEvent() {
@@ -75,42 +74,21 @@ void SorthemApp::handleEvent() {
     }
     else if (m_event.type == sf::Event::KeyPressed) {
         /* Start sorting (sorting=true, loading_operations=true)*/
-        if (m_event.key.code == sf::Keyboard::Space && !m_sorting && !m_loading_array_data) {
-            std::cout << "\nSORTING...\n\n";
-            /* open the program once */
-            // Start child process and redirect its stdout to a pipe
-            FILE* pipe = popen(m_process_cmd.c_str(), "r");
-            m_sorting = true;
-            if (pipe == nullptr) {
-                std::cerr << "Failed to open process\n";
-                exit(1);
+        if (m_event.key.code == sf::Keyboard::Space) {
+            if (m_finished) {
+                m_operation_index = 0;
+                m_graph.resetBarStates();
+                m_finished = false;
             }
-
-            // Start thread to read output from pipe
-            m_loading_operations = true;
-            std::thread read_thread(&SorthemApp::readProcessOperationsThread, this, pipe);
-            read_thread.detach();
+            else {
+                m_sorting = !m_sorting;
+            }
         }
-        /* Load array from the program (loading_array_data=true) */
-        if (m_event.key.code == sf::Keyboard::L && !m_loading_array_data && !m_sorting) {
-            std::cout << "\nLOADING DATA...\n\n";
-            m_loading_array_data = true;
-
-            FILE* pipe = popen(m_process_cmd.c_str(), "r");
-            if (pipe == nullptr) {
-                std::cerr << "Failed to open process\n";
-                exit(1);
-            }
-
+        if (m_event.key.code == sf::Keyboard::R) {
             m_graph.resetBarStates();
-            // Starts a thread and detach it to read output from pipe
-            std::thread load_thread(
-                &Graph::loadDataFromProcessThread,
-                &m_graph,
-                pipe,
-                &m_loading_array_data
-            );
-            load_thread.detach();
+            m_operation_index = 0;
+            m_finished = false;
+            m_sorting = false;
         }
         /* Dump array to the program */
         if (m_event.key.code == sf::Keyboard::D && !m_sorting) {

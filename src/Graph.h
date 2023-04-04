@@ -1,7 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <vector>
-#include <queue>
 #include <string>
 #include "Bar.h"
 
@@ -10,11 +9,12 @@ typedef float bar_height_t;
 
 class Graph : public sf::Drawable {
     std::vector<Bar> m_bars;
+    std::vector<bar_height_t> m_data;
     // Points to the view of the window
     const sf::View* m_win_view;
     bar_height_t m_max_height;
   public:
-    Graph(int bars_number, const sf::View* win_view);
+    Graph(const sf::View* win_view);
 
     /**
      * @brief Execute an operation on the sorting graph.
@@ -26,7 +26,7 @@ class Graph : public sf::Drawable {
      *
      * This function should be called only once, when the window is created.
     */
-    void constructRectangles(sf::Vector2f win_size);
+    void loadRectsValues();
 
     /**
      * @brief Resize the bars and set their positions.
@@ -57,17 +57,14 @@ class Graph : public sf::Drawable {
     void finishAnimation();
 
     /**
-     * @brief The starting point of the load data thread. The data read from the
-     * pipe has the form [ n1 n2 n3 n4 ] (defined by the user.)
+     * @brief Reads all the array data from the stdin and loads it into m_data.
      *
      * The data will be read from "[" to "]" and must have the form of:
      * [ 100 234 23 12.2 1.5 ]
      *
-     * While executing, `m_loading_array_data` is set to true.
-     *
-     * On finish, it updates all the graph and sets loading to false.
+     * On finish, it updates all the graph.
     */
-    void loadDataFromProcessThread(FILE* pipe, bool* loading);
+    void loadArrayDataFromStdin();
 
     /* Basic sorting operations (documentend on the README.md) */
 

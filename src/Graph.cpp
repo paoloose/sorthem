@@ -1,13 +1,11 @@
 #include <vector>
 #include <iostream>
 #include <sstream>
-#include <thread>
 #include <string>
 #include <cstring>
 #include "Graph.h"
 
-Graph::Graph(int bars_number, const sf::View* win_view) :
-    m_bars(bars_number),
+Graph::Graph(const sf::View* win_view) :
     m_win_view(win_view)
 { }
 
@@ -96,13 +94,14 @@ void Graph::execute(std::string operation) {
     }
 }
 
-void Graph::constructRectangles(sf::Vector2f win_size) {
+void Graph::loadRectsValues() {
     size_t count = m_bars.size();
-    float rects_width = win_size.x / count;
+    float win_height = m_win_view->getSize().y;
+    float rects_width = m_win_view->getSize().x / count;
     for (std::size_t i = 0; i < count; i++) {
-        float random_height = (std::rand() % static_cast<int>(win_size.y)) + 1;
-        m_bars[i].setSize({ rects_width, random_height });
-        m_bars[i].setPosition({ i * rects_width, win_size.y - random_height });
+        float height = win_height * m_data[i] / m_max_height;
+        m_bars[i].setSize({ rects_width, height });
+        m_bars[i].setPosition({ i * rects_width, win_height - height });
     }
 }
 
@@ -128,6 +127,7 @@ void Graph::resetBarStates() {
     for (auto& bar : m_bars) {
         bar.setState(Bar::state::Iddle);
     }
+    loadRectsValues();
 }
 
 void Graph::refreshBarStates() {
@@ -158,20 +158,19 @@ void Graph::finishAnimation() {
     }
 }
 
-void Graph::loadDataFromProcessThread(FILE* pipe, bool* loading) {
+void Graph::loadArrayDataFromStdin() {
     char buffer[256];
     // The string where the complete array representation will be loaded
     std::string str_arr;
     bool array_started = false;
     bool array_closed  = false;
 
-    /* Load the date from the pipe */
-
-    // Read until we find a "]" or the end of the pipe
+    // Read until we find a "]" and store the data in str_arr
+    // (without including the brackets)
     // Note that:
     // - fgets already adds the null terminator
     // - fgets stops reading when it finds a new line, EOF or the buffer is full
-    while (!array_closed && (fgets(buffer, sizeof(buffer), pipe) != nullptr)) {
+    while (!array_closed && (fgets(buffer, sizeof(buffer), stdin) != nullptr)) {
         std::string str(buffer);
         for (size_t i = 0; i < str.length(); i++) {
             if (buffer[i] == '[') {
@@ -200,20 +199,18 @@ void Graph::loadDataFromProcessThread(FILE* pipe, bool* loading) {
     }
 
     /* Parse the data into a vector */
-    // str_arr is like "[ 100 234 23 12.2 1.5 ]";
+    // str_arr is like "100 234 23 12.2 1.5";
 
-    std::vector<bar_height_t> nums;
     // We use string streams to parse the data *easily*
     std::istringstream iss(str_arr);
     std::string str_num;
 
-    std::cout << "str_arr: " << str_arr << "\n";
+    std::cout << "data: " << str_arr << "\n";
 
     while (iss >> str_num) {
-        std::cout << "token: " << str_num << "\n";
         try {
             bar_height_t num = STR_TO_BAR_HEIGHT_T(str_num);
-            nums.push_back(num);
+            m_data.push_back(num);
         }
         catch (...) {
             // TODO: handle exceptions better (with UI)
@@ -223,26 +220,11 @@ void Graph::loadDataFromProcessThread(FILE* pipe, bool* loading) {
 
     /* Refresh the bars */
 
-    m_max_height = *std::max_element(nums.begin(), nums.end());
-    size_t count = nums.size();
+    m_max_height = *std::max_element(m_data.begin(), m_data.end());
+    size_t count = m_data.size();
+    // resize the vector to fit the new loaded data
     m_bars.resize(count);
-    float rects_width = m_win_view->getSize().x / static_cast<float>(count);
-    for (std::size_t i = 0; i < count; i++) {
-        float height = nums[i] / m_max_height * m_win_view->getSize().y;
-        m_bars[i].setSize({ rects_width, height });
-        m_bars[i].setPosition({ i * rects_width, m_win_view->getSize().y - height });
-    }
-
-    *loading = false;
-    std::cout << "load: finished loading data\n";
-
-    // Read the remaining data from the pipe
-    // this is to avoid to send a SIGPIPE signal to the child process
-    while (fgets(buffer, sizeof(buffer), pipe) != nullptr) {
-        // do nothing
-    }
-    std::cout << "load: finished reading remaining data\n";
-    pclose(pipe);
+    loadRectsValues();
 }
 
 /* Sorting operations */

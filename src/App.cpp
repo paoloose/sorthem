@@ -2,6 +2,7 @@
 #include <iostream>
 #include <sstream>
 #include <chrono>
+#include <thread>
 #include "App.h"
 
 SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
@@ -22,7 +23,11 @@ SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
 }
 
 void SorthemApp::mainLoop() {
+    float dt;
     while (m_window.isOpen()) {
+        dt = m_clock.restart().asSeconds();
+        (void)dt; // TODO: use dt to calculate the real speed
+
         while (m_window.pollEvent(m_event)) {
             /* interact with input (UI) */
             handleEvent();
@@ -33,6 +38,10 @@ void SorthemApp::mainLoop() {
         /* perform operations */
         if (m_sorting) {
             // operations per frame
+            // sleep for 1 / 60 seconds
+            std::this_thread::sleep_for(std::chrono::milliseconds(
+                static_cast<int>((1000.f / 60.f) / m_real_speed)
+            ));
             int max_operations = MAX_OPERATIONS_PER_FRAME;
             while (max_operations--) {
                 if (m_operation_index == m_operations.size()) {
@@ -43,8 +52,6 @@ void SorthemApp::mainLoop() {
                 }
                 m_graph.refreshBarStates();
                 m_graph.execute(m_operations[m_operation_index]);
-                std::cout << "executing: " << m_operation_index << "\n";
-                std::cout << "executing: " << m_operations.size() << "\n";
                 m_operation_index++;
             }
         }
@@ -93,6 +100,21 @@ void SorthemApp::handleEvent() {
             m_operation_index = 0;
             m_finished = false;
             m_sorting = false;
+        }
+        if (m_event.key.code == sf::Keyboard::Up) {
+            std::cout << m_user_speed << "\n";
+            m_user_speed += 0.05f;
+            m_real_speed = LINEAR_SPEED_TO_REAL_SPEED(m_user_speed);
+            std::cout << "speed:" << m_real_speed << "\n";
+        }
+        if (m_event.key.code == sf::Keyboard::Down) {
+            std::cout << m_user_speed << "\n";
+            m_user_speed -= 0.05f;
+            if (m_user_speed < 0.01f) {
+                m_user_speed = 0.01f;
+            }
+            m_real_speed = LINEAR_SPEED_TO_REAL_SPEED(m_user_speed);
+            std::cout << "speed:" << m_real_speed << "\n";
         }
         /* Dump array to the program */
         if (m_event.key.code == sf::Keyboard::D && !m_sorting) {

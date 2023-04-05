@@ -6,11 +6,14 @@
 #define MAX_OPERATIONS_PER_FRAME 1
 #define OPERATIONS_RESERVED_SIZE 1024
 
+#define LINEAR_SPEED_TO_REAL_SPEED(x) ((((x) * (x) * (x)) / 5.f) + ((x) / 2.f))
+
 class SorthemApp {
     sf::RenderWindow m_window;
     // Graph object. Must lock the mutex while accesing to it
     Graph m_graph;
     sf::Event m_event;
+    sf::Clock m_clock;
 
     // Vector of operations to perform on the graph
     std::vector<std::string> m_operations;
@@ -24,8 +27,13 @@ class SorthemApp {
     // Whether the program has finished the sorting
     bool m_finished = false;
 
-    // Whether the program has laoded the array data from stdin
+    // Whether the program has loaded the array data from stdin
     bool m_array_data_loaded = false;
+
+    // Speed of the sorting animation. It changes linearly with user input
+    float m_user_speed = 1.f;
+    // Real speed applied to the sorting animation (from 0 to inf)
+    float m_real_speed = LINEAR_SPEED_TO_REAL_SPEED(m_user_speed);
 
 public:
     /**

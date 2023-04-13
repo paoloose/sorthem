@@ -6,20 +6,21 @@
 #include "App.h"
 
 SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
-    m_window(win_mode, "sorthem", style),
+    m_window(),
     m_graph(&m_window.getView()),
     m_operations()
 {
     m_operations.reserve(OPERATIONS_RESERVED_SIZE);
-    std::cout << "\nLoading data...\n\n";
+    std::cout << "\nLoading data...\n";
     m_graph.loadArrayDataFromStdin();
-    m_graph.loadRectsValues();
     m_array_data_loaded = true;
 
-    std::cout << "\nLoading operations...\n\n";
+    std::cout << "Loading operations...\n";
     this->loadOperationsFromStdin();
 
     std::cout << "Done\n";
+    m_window.create(win_mode, "sorthem", style);
+    m_graph.loadRectsValues();
 }
 
 void SorthemApp::mainLoop() {
@@ -68,7 +69,6 @@ void SorthemApp::loadOperationsFromStdin() {
     /* open program */
     std::string operation;
     while (std::getline(std::cin, operation)) {
-        std::cout << operation << std::endl;
         m_operations.push_back(operation);
     }
 }

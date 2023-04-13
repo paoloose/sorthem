@@ -205,7 +205,8 @@ void Graph::loadArrayDataFromStdin() {
     std::istringstream iss(str_arr);
     std::string str_num;
 
-    std::cout << "data: " << str_arr << "\n";
+    // print for debugging purposes
+    // std::cout << "data: " << str_arr << "\n";
 
     while (iss >> str_num) {
         try {

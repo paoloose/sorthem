@@ -50,19 +50,19 @@ void Bar::setState(Bar::state state) {
         break;
     }
     case Bar::state::Swapping: {
-        m_shape.setFillColor(sf::Color::Red);
+        m_shape.setFillColor(Bar::swapping_color);
         break;
     }
     case Bar::state::Getting: {
-        m_shape.setFillColor(sf::Color::Cyan);
+        m_shape.setFillColor(Bar::getting_color);
         break;
     }
     case Bar::state::Setting: {
-        m_shape.setFillColor(sf::Color::Blue);
+        m_shape.setFillColor(Bar::setting_color);
         break;
     }
     case Bar::state::Comparing: {
-        m_shape.setFillColor(sf::Color::Green);
+        m_shape.setFillColor(Bar::comparing_color);
         break;
     }
     default:

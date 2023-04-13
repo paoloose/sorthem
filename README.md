@@ -95,8 +95,8 @@ check them out!
 
 ## Semantic Colors
 
-- ![#fff](https://placehold.co/15x15/fff/fff.png) `#fff`: an iddle bar
-- ![#f00](https://placehold.co/15x15/f00/f00.png) `#f00`: two bars being swaped
-- ![#0ff](https://placehold.co/15x15/0ff/0ff.png) `#0ff`: getting the value of the bar
-- ![#00f](https://placehold.co/15x15/00f/00f.png) `#00f`: setting the value of the bar
-- ![#0f0](https://placehold.co/15x15/0f0/0f0.png) `#0f0`: two bars are being compared
+- ![#ffffff](https://placehold.co/15x15/ffffff/ffffff.png) `#ffffff`: an iddle bar
+- ![#f33232](https://placehold.co/15x15/f33232/f33232.png) `#f33232`: two bars being swaped
+- ![#9b54c3](https://placehold.co/15x15/9b54c3/9b54c3.png) `#9b54c3`: getting the value of the bar
+- ![#2d43db](https://placehold.co/15x15/2d43db/2d43db.png) `#2d43db`: setting the value of the bar
+- ![#e79933](https://placehold.co/15x15/e79933/e79933.png) `#e79933`: two bars are being compared

@@ -5,7 +5,7 @@ sorting algorithms easily.
 
 ## How does it work?
 
-Sorthem is... simple. You have a sorting algorithm, written in **whatever
+Sorthem is simple. You have a sorting algorithm, written in **whatever
 language you like**. Let's say, a **bubble sort** implementation in **Ruby**:
 
 ```ruby
@@ -79,15 +79,15 @@ check them out!
 
   usage: `compare i j`
 
-- **swap**: for swapping values at position i and j
+- **swap**: for swapping the values of two indexes
 
   usage: `swap i j`
 
-- **get i**: for consulting the value at index i
+- **get**: for consulting the value at some index
 
   usage: `get i`
 
-- **set i j**: for consulting the value at index i
+- **set**: for setting an index to a value
 
   usage: `set i value`, where `0 <= value <= max_value`
 

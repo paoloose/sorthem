@@ -1,7 +1,7 @@
 # Sorthem
 
 Sorthem is a language-agnostic tool that enables you to visualize **your**
-sorting algorithms by just a few lines of code.
+sorting algorithms with just a few lines of code.
 
 ## How does it work?
 

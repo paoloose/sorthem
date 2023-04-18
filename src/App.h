@@ -28,11 +28,6 @@ public:
     */
     void mainLoop();
 
-    /**
-     * @brief Loads the stdin input (array data and operations)
-    */
-    // void loadStdin();
-
 private:
     /**
      * @brief Handles the events polled by the main loop.

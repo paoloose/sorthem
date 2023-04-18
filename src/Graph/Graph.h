@@ -9,7 +9,8 @@ typedef float bar_height_t;
 
 class Graph : public sf::Drawable {
     std::vector<Bar> m_bars;
-    std::vector<bar_height_t> m_data;
+    // Initial data loaded on startup
+    std::vector<bar_height_t> m_initial_data;
     // Points to the view of the window
     const sf::View* m_win_view;
     bar_height_t m_max_height;
@@ -41,12 +42,13 @@ class Graph : public sf::Drawable {
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
     /**
-     * @brief Resets all the bar states to the default state.
+     * @brief Resets all the bar states to the default state and with their
+     * default values
     */
     void resetBarStates();
 
     /**
-     * @brief Refreshes all the bar states
+     * @brief Refreshes all the bar states. No values are modified.
     */
     void refreshBarStates();
 

@@ -8,19 +8,19 @@
 SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
     m_window(),
     m_graph(&m_window.getView()),
-    m_operations()
+    m_algorithm()
 {
-    m_operations.reserve(OPERATIONS_RESERVED_SIZE);
     std::cout << "\nLoading data...\n";
     m_graph.loadArrayDataFromStdin();
-    m_array_data_loaded = true;
 
     std::cout << "Loading operations...\n";
-    this->loadOperationsFromStdin();
+    m_algorithm.loadOperationsFromStdin();
 
     std::cout << "Done\n";
     m_window.create(win_mode, "sorthem", style);
     m_graph.loadRectsValues();
+
+    m_algorithm.spawnThread(&m_graph, m_shared_state);
 }
 
 void SorthemApp::mainLoop() {
@@ -36,40 +36,10 @@ void SorthemApp::mainLoop() {
         /* update UI */
         // TODO: no UI yet
 
-        /* perform operations */
-        if (m_sorting) {
-            // operations per frame
-            // sleep for 1 / 60 seconds
-            std::this_thread::sleep_for(std::chrono::milliseconds(
-                static_cast<int>((1000.f / 60.f) / m_real_speed)
-            ));
-            int max_operations = MAX_OPERATIONS_PER_FRAME;
-            while (max_operations--) {
-                if (m_operation_index == m_operations.size()) {
-                    m_sorting = false;
-                    m_finished = true;
-                    m_graph.finishAnimation();
-                    break;
-                }
-                m_graph.refreshBarStates();
-                m_graph.execute(m_operations[m_operation_index]);
-                m_operation_index++;
-            }
-        }
-
-        m_window.clear();
         /* draw */
+        m_window.clear();
         m_window.draw(m_graph);
         m_window.display();
-    }
-}
-
-// TODO: there is a delay on fgets when the last operation is executed
-void SorthemApp::loadOperationsFromStdin() {
-    /* open program */
-    std::string operation;
-    while (std::getline(std::cin, operation)) {
-        m_operations.push_back(operation);
     }
 }
 
@@ -86,38 +56,35 @@ void SorthemApp::handleEvent() {
     else if (m_event.type == sf::Event::KeyPressed) {
         /* Start sorting (sorting=true, loading_operations=true)*/
         if (m_event.key.code == sf::Keyboard::Space) {
-            if (m_finished) {
-                m_operation_index = 0;
+            if (m_shared_state.isFinished()) {
                 m_graph.resetBarStates();
-                m_finished = false;
+                m_shared_state.setOperationIndex(0);
+                m_shared_state.setIsFinished(false);
             }
             else {
-                m_sorting = !m_sorting;
+                bool is_paused = m_shared_state.isPaused();
+                m_shared_state.setIsPaused(!is_paused);
             }
         }
         if (m_event.key.code == sf::Keyboard::R) {
             m_graph.resetBarStates();
-            m_operation_index = 0;
-            m_finished = false;
-            m_sorting = false;
+            m_shared_state.setOperationIndex(0);
+            m_shared_state.setIsFinished(false);
+            m_shared_state.setIsPaused(true);
         }
         if (m_event.key.code == sf::Keyboard::Up) {
-            std::cout << m_user_speed << "\n";
-            m_user_speed += 0.05f;
-            m_real_speed = LINEAR_SPEED_TO_REAL_SPEED(m_user_speed);
-            std::cout << "speed:" << m_real_speed << "\n";
+            float new_user_speed = m_shared_state.getUserSpeed() + 0.05f;
+            m_shared_state.setUserSpeed(new_user_speed);
         }
         if (m_event.key.code == sf::Keyboard::Down) {
-            std::cout << m_user_speed << "\n";
-            m_user_speed -= 0.05f;
-            if (m_user_speed < 0.01f) {
-                m_user_speed = 0.01f;
+            float new_user_speed = m_shared_state.getUserSpeed() - 0.05f;
+            if (new_user_speed < 0.01f) {
+                new_user_speed = 0.01f;
             }
-            m_real_speed = LINEAR_SPEED_TO_REAL_SPEED(m_user_speed);
-            std::cout << "speed:" << m_real_speed << "\n";
+            m_shared_state.setUserSpeed(new_user_speed);
         }
         /* Dump array to the program */
-        if (m_event.key.code == sf::Keyboard::D && !m_sorting) {
+        if (m_event.key.code == sf::Keyboard::D && m_shared_state.isPaused()) {
             // non implemented yet
         }
     }

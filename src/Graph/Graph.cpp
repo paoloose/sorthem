@@ -99,7 +99,7 @@ void Graph::loadRectsValues() {
     float win_height = m_win_view->getSize().y;
     float rects_width = m_win_view->getSize().x / count;
     for (std::size_t i = 0; i < count; i++) {
-        float height = win_height * m_data[i] / m_max_height;
+        float height = win_height * m_initial_data[i] / m_max_height;
         m_bars[i].setSize({ rects_width, height });
         m_bars[i].setPosition({ i * rects_width, win_height - height });
     }
@@ -211,7 +211,7 @@ void Graph::loadArrayDataFromStdin() {
     while (iss >> str_num) {
         try {
             bar_height_t num = STR_TO_BAR_HEIGHT_T(str_num);
-            m_data.push_back(num);
+            m_initial_data.push_back(num);
         }
         catch (...) {
             // TODO: handle exceptions better (with UI)
@@ -221,8 +221,11 @@ void Graph::loadArrayDataFromStdin() {
 
     /* Refresh the bars */
 
-    m_max_height = *std::max_element(m_data.begin(), m_data.end());
-    size_t count = m_data.size();
+    m_max_height = *std::max_element(
+        m_initial_data.begin(),
+        m_initial_data.end()
+    );
+    size_t count = m_initial_data.size();
     // resize the vector to fit the new loaded data
     m_bars.resize(count);
     loadRectsValues();

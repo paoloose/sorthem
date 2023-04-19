@@ -1,6 +1,6 @@
 #include "Algorithm.h"
 
-Algorithm::Algorithm() {
+Algorithm::Algorithm() : m_operations(), m_sorting_thread() {
     m_operations.reserve(OPERATIONS_RESERVED_SIZE);
 }
 
@@ -37,6 +37,9 @@ void Algorithm::sortingThread(Graph* graph, SharedState& shared_state) {
 }
 
 void Algorithm::spawnThread(Graph* graph, SharedState& shared_state) {
-    std::thread t(&Algorithm::sortingThread, this, graph, std::ref(shared_state));
-    t.detach();
+    m_sorting_thread = std::thread(
+        &Algorithm::sortingThread,
+        this, graph, std::ref(shared_state)
+    );
+    m_sorting_thread.detach();
 }

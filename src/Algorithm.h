@@ -23,6 +23,7 @@
 class Algorithm {
     // Vector of operations to perform on the graph
     std::vector<std::string> m_operations;
+    std::thread m_sorting_thread;
 
 public:
     Algorithm();

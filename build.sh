@@ -34,6 +34,4 @@ $compiler $linker_dir $objs -o $build_dir/$bin_name $flags $libs
 
 if [ "$1" = "run" ]; then
     $build_dir/$bin_name
-elif [ "$1" = "debug" ]; then
-    gdb $build_dir/$bin_name
 fi

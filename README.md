@@ -62,8 +62,7 @@ algorithm. You can run it with:
 ruby bubble_sort.rb | sorthem
 ```
 
-<!-- markdownlint-disable MD033 -->
-<video src="assets/demo.mp4" controls title="sorthem demo"></video>
+![Bubble Sort sorthem demo](./assets/demo.gif)
 
 Note that `compare` isn't actually needed. Only `swap` does the job of sorting
 the array. `compare` is simply a helpful operation for visualization.

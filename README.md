@@ -1,3 +1,4 @@
+<!-- markdownlint-disable MD033 -->
 # Sorthem
 
 Sorthem is a language-agnostic tool that enables you to visualize **your**
@@ -91,6 +92,49 @@ You have a variety of examples in the [examples](./examples/) directory (WIP).
   usage: `set i value`, where `0 <= value <= max_value`
 
 `i` and `j` must be valid zero-based indexes.
+
+## Getting started
+
+### Usage
+
+```bash
+your_sorting_algorithm | sorthem
+```
+
+### Controls
+
+- <kbd>Space</kbd> - pause/resume
+- <kbd>R</kbd> - restart
+- <kbd>&uparrow;</kbd> - speed up
+- <kbd>&downarrow;</kbd> - speed down
+
+## Building sorthem
+
+`sorthem` uses [SFML](https://www.sfml-dev.org/) for graphics. The instalation
+process depends on your OS. See the [official documentation](https://www.sfml-dev.org/tutorials/latest).
+
+```bash
+# Debian based distros
+sudo apt update
+sudo apt install libsfml-dev
+
+# On MacOS
+brew install sfml
+```
+
+There are no official packages for Windows, but you can download the binaries
+from the [official website](https://www.sfml-dev.org/download/sfml/2.5.1/).
+
+Run the following commands to build `sorthem`:
+
+```bash
+git clone https://github.com/paoloose/sorthem.git
+cd sorthem
+
+# On windows, build under WSL
+./build.sh
+cat examples/test | dist/sorthem
+```
 
 ## Semantic Colors
 

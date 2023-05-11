@@ -62,7 +62,8 @@ algorithm. You can run it with:
 ruby bubble_sort.rb | sorthem
 ```
 
-<!-- TODO: add a gif here -->
+<!-- markdownlint-disable MD033 -->
+<video src="assets/demo.mp4" controls title="sorthem demo"></video>
 
 Note that `compare` isn't actually needed. Only `swap` does the job of sorting
 the array. `compare` is simply a helpful operation for visualization.
@@ -70,8 +71,7 @@ the array. `compare` is simply a helpful operation for visualization.
 Of course, there are more types of operations for more **complex** algorithms,
 each associated with [semantic color](#semantic-colors).
 
-We have [many examples](./examples/) on many programming languages,
-check them out!
+You have a variety of examples in the [examples](./examples/) directory (WIP).
 
 ## Basic operations
 

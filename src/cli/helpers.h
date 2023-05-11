@@ -15,6 +15,6 @@ void exit_if_bad_usage() {
         std::cerr << "Bad usage: no output has been piped\n";
         std::cerr << "pipe the output of your sorting program to visualize it\n";
         std::cerr << "Example: ./sort_program | sorthem\n";
-        exit(-1);
+        exit(1);
     }
 }

@@ -33,7 +33,6 @@ float SharedState::getRealSpeed() const {
 void SharedState::setUserSpeed(float speed) {
     m_user_speed = speed;
     m_real_speed = LINEAR_SPEED_TO_REAL_SPEED(m_user_speed);
-    std::cout << "m_real_speed: " << m_real_speed << std::endl;
 }
 
 std::size_t SharedState::getOperationIndex() const {

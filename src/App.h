@@ -7,7 +7,6 @@
 
 class SorthemApp {
     sf::RenderWindow m_window;
-    // Graph object. Must lock the mutex while accesing to it
     Graph m_graph;
     Algorithm m_algorithm;
     sf::Event m_event;

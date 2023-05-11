@@ -28,8 +28,7 @@ jobs:
     - name: setup sfml
       run: |
         mkdir -p ~/Library/Frameworks
-        cp -r /usr/local/Cellar/sfml/2.5.1_2/Frameworks/* /Library/Frameworks
-        cp -r /usr/local/Cellar/sfml/2.5.1_2/extlibs/* /Library/Frameworks
         cp -r /usr/local/Cellar/sfml/2.5.1_2/include/* /usr/local/include
+        cp -r /usr/local/Cellar/sfml/2.5.1_2/lib/* /usr/local/lib
     - name: build
       run: ./build.sh

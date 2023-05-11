@@ -42,4 +42,6 @@ jobs:
         additional-packages: libsfml-dev
     - name: build
       shell: wsl-bash {0}
-      run: ./build.sh
+      run: |
+        sed -i 's/\r$//' ./build.sh
+        ./build.sh

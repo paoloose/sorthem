@@ -14,7 +14,9 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: install dependencies
-      run: sudo apt install libsfml-dev
+      run: |
+        sudo apt update
+        sudo apt install libsfml-dev
     - name: build
       run: ./build.sh
 
@@ -26,4 +28,18 @@ jobs:
     - name: install dependencies
       run: brew install sfml
     - name: build
+      run: ./build.sh
+
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup WSL
+      uses: Vampire/setup-wsl@v2.0.1
+      with:
+        distribution: Debian
+        additional-packages: libsfml-dev
+    - name: build
+      shell: wsl-bash {0}
       run: ./build.sh

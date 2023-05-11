@@ -1,7 +1,7 @@
 #!/bin/bash
 
 compiler="g++"
-flag_mode=$(if [ "$1" = "debug" ]; then echo "-g"; else echo "-O3"; fi)
+flag_mode=$(if [ "$1" = "debug" ]; then echo "-g -DDEBUG"; else echo "-O3"; fi)
 flags="-Wall -Wextra -pedantic -std=c++17 $flag_mode"
 bin_name="sorthem"
 build_dir="./dist"

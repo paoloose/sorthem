@@ -17,6 +17,7 @@ void Algorithm::sortingThread(Graph* graph, SharedState& shared_state) {
     while (true) {
         std::size_t operation_index = shared_state.getOperationIndex();
         if (shared_state.isPaused()) {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
             continue;
         }
         if (operation_index >= m_operations.size()) {

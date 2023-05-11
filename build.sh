@@ -1,7 +1,8 @@
 #!/bin/bash
 
 compiler="g++"
-flags="-Wall -Wextra -pedantic"
+flag_mode=$(if [ "$1" = "debug" ]; then echo "-g"; else echo "-O3"; fi)
+flags="-Wall -Wextra -pedantic -std=c++17 $flag_mode"
 bin_name="sorthem"
 build_dir="./dist"
 libs="-lsfml-graphics -lsfml-window -lsfml-system"
@@ -16,10 +17,10 @@ case "$(uname -s)" in MINGW*)
     linker_dir="-L$SFML_path\lib"
 esac
 
+units=$(find ./src -name "*.cpp")
+
 set -e
 set -x
-
-units=$(find ./src -name "*.cpp")
 
 mkdir -p $build_dir
 
@@ -32,7 +33,7 @@ objs=$(find $build_dir -name "*.o")
 $compiler $linker_dir $objs -o $build_dir/$bin_name $flags $libs
 
 if [ "$1" = "run" ]; then
-    shift 1
-    cmd=$@
-    $build_dir/$bin_name "$cmd"
+    $build_dir/$bin_name
+elif [ "$1" = "debug" ]; then
+    gdb $build_dir/$bin_name
 fi

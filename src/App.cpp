@@ -46,6 +46,7 @@ void SorthemApp::mainLoop() {
 void SorthemApp::handleEvent() {
     if (m_event.type == sf::Event::Closed) {
         m_window.close();
+        exit(0);
     }
     else if (m_event.type == sf::Event::Resized) {
         sf::FloatRect visibleArea(0.f, 0.f, m_event.size.width, m_event.size.height);

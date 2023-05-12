@@ -5,7 +5,7 @@ flag_mode=$(if [ "$1" = "debug" ]; then echo "-g -DDEBUG"; else echo "-O3"; fi)
 flags="-Wall -Wextra -pedantic -std=c++17 $flag_mode"
 bin_name="sorthem"
 build_dir="./dist"
-libs="-lsfml-graphics -lsfml-window -lsfml-system"
+libs="-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio"
 # if you installed SFML in a non standard path
 linker_dir=""
 include=""

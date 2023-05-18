@@ -37,6 +37,7 @@ void exit_if_bad_usage() {
         }
 
         pclose(process);
+        fclose(output);
         freopen(TMP_FILE, "r", stdin);
 #endif
     }

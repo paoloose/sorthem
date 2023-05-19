@@ -8,12 +8,12 @@ build_dir="./dist"
 libs="-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio"
 # if you installed SFML in a non standard path
 linker_dir=""
-include=""
+include="-I./src/include"
 
 case "$(uname -s)" in MINGW*)
     # for windows
     SFML_path='C:\SFML-2.5.1'
-    include="-I$SFML_path\include"
+    include="$include -I$SFML_path\include"
     linker_dir="-L$SFML_path\lib"
 esac
 
@@ -27,7 +27,7 @@ rm -rf $build_dir/*
 
 for unit in $units; do
     dest=$build_dir/$(basename $unit .cpp).o
-    $compiler -c $unit -o $dest $flags $include
+    $compiler -c $unit -o $dest $include $flags
 done
 
 objs=$(find $build_dir -name "*.o")

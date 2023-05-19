@@ -23,6 +23,7 @@ set -e
 set -x
 
 mkdir -p $build_dir
+rm -rf $build_dir/*
 
 for unit in $units; do
     dest=$build_dir/$(basename $unit .cpp).o

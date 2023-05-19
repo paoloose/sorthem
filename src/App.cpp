@@ -18,8 +18,8 @@ SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
 
     std::cout << "Done\n";
     m_window.create(win_mode, "sorthem", style);
+    m_window.setVerticalSyncEnabled(true);
     m_graph.loadRectsValues();
-
     m_algorithm.spawnThread(&m_graph, m_shared_state);
 }
 

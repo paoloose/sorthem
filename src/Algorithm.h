@@ -5,19 +5,18 @@
 #include <iostream>
 #include "Graph/Graph.h"
 #include "SharedState.h"
+#include "config.h"
 
 // initial reserved size for the m_operations vector
 #define OPERATIONS_RESERVED_SIZE 1024
 
 #define NANOSECS_FLOAT 1000000000.f
 
-#define FPS 60.f
-
 #define LENGTH_FACTOR(len) 0.5f + (len / 1000.f)
 
 #define CALCULATE_SLEEP_TIME(real_speed, total_items) \
     static_cast<std::int64_t>( \
-        ((NANOSECS_FLOAT / FPS) / (real_speed)) / (LENGTH_FACTOR(total_items)) \
+        ((NANOSECS_FLOAT / APP_FPS) / (real_speed)) / (LENGTH_FACTOR(total_items)) \
     )
 
 class Algorithm {

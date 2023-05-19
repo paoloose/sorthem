@@ -1,16 +1,14 @@
 #include <string>
 #include <SFML/Graphics.hpp>
-#include "cli/helpers.h"
 #include "App.h"
-
-#define WIN_HEIGHT 600
-#define WIN_WIDTH 800
+#include "cli/helpers.h"
+#include "config.h"
 
 int main(void) {
     exit_if_bad_usage();
 
     SorthemApp sorthem(
-        sf::VideoMode(WIN_WIDTH, WIN_HEIGHT),
+        sf::VideoMode(INITIAL_WIN_WIDTH, INITIAL_WIN_HEIGHT),
         sf::Style::Default
     );
     sorthem.mainLoop();

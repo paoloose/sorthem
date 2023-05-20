@@ -39,8 +39,8 @@ void Algorithm::sortingThread(Graph* graph, SharedState& shared_state) {
 
 void Algorithm::spawnThread(Graph* graph, SharedState& shared_state) {
     m_sorting_thread = std::thread(
-        &Algorithm::sortingThread,
-        this, graph, std::ref(shared_state)
+        &Algorithm::sortingThread, this,
+        graph, std::ref(shared_state)
     );
     m_sorting_thread.detach();
 }

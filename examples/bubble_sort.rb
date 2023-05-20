@@ -3,8 +3,8 @@
 # This is the example provided in the README.md file
 
 # Pssst, instead of doing `swap i j`, try the complex way:
-# puts "set #{j} #{right}"
-# puts "set #{j + 1} #{left}"
+# puts "set #{j} #{arr[j+1]}"
+# puts "set #{j+1} #{arr[j]}"
 
 # should be the same, right?
 

@@ -3,7 +3,7 @@
 #include <vector>
 #include <thread>
 #include <iostream>
-#include "Graph/Graph.h"
+#include "ui/Graph.h"
 #include "SharedState.h"
 #include "config.h"
 

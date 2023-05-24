@@ -1,7 +1,7 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <mutex>
-#include "Graph/Graph.h"
+#include "ui/Graph.h"
 #include "Algorithm.h"
 #include "SharedState.h"
 

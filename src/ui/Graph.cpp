@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 #include <cstring>
-#include "Graph.h"
+#include "ui/Graph.h"
 
 Graph::Graph(const sf::View* win_view) :
     m_win_view(win_view)

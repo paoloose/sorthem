@@ -6,7 +6,6 @@ Algorithm::Algorithm() : m_operations(), m_sorting_thread() {
     m_operations.reserve(OPERATIONS_RESERVED_SIZE);
 }
 
-// TODO: there is a delay on fgets when the last operation is executed
 void Algorithm::loadOperationsFromStdin() {
     /* open program */
     std::string operation;

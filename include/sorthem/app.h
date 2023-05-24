@@ -10,12 +10,12 @@ namespace sorthem {
 
 class SorthemApp {
     sf::RenderWindow m_window;
-    Graph m_graph;
-    Algorithm m_algorithm;
+    sorthem::Graph m_graph;
+    sorthem::Algorithm m_algorithm;
     sf::Event m_event;
     sf::Clock m_clock;
     // The application state shared with the sorting thread
-    SharedState m_shared_state;
+    sorthem::SharedState m_shared_state;
 
 public:
     /**

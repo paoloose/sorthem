@@ -10,7 +10,7 @@ class Bar : public sf::Drawable {
     enum class state : short;
   private:
     sf::RectangleShape m_shape;
-    state m_state;
+    sorthem::Bar::state m_state;
     bool m_with_mark = false;
     std::string m_mark;
   public:

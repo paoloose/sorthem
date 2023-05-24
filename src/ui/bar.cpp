@@ -2,34 +2,32 @@
 #include <iostream>
 #include <sorthem/ui/bar.h>
 
-namespace sorthem {
-
-Bar::Bar() : m_shape(), m_state(Bar::state::Iddle) {
+sorthem::Bar::Bar() : m_shape(), m_state(Bar::state::Iddle) {
     m_shape.setFillColor(Bar::default_color);
 }
 
-void Bar::setSize(sf::Vector2f new_size) {
+void sorthem::Bar::setSize(sf::Vector2f new_size) {
     m_shape.setSize(new_size);
 }
-sf::Vector2f Bar::getSize() {
+sf::Vector2f sorthem::Bar::getSize() {
     return m_shape.getSize();
 }
 
-void Bar::setPosition(sf::Vector2f new_pos) {
+void sorthem::Bar::setPosition(sf::Vector2f new_pos) {
     m_shape.setPosition(new_pos);
 }
-sf::Vector2f Bar::getPosition() {
+sf::Vector2f sorthem::Bar::getPosition() {
     return m_shape.getPosition();
 }
 
-void Bar::setColor(sf::Color color) {
+void sorthem::Bar::setColor(sf::Color color) {
     m_shape.setFillColor(color);
 }
 
-std::string Bar::getMark() {
+std::string sorthem::Bar::getMark() {
     return m_mark;
 }
-void Bar::setMark(std::string mark) {
+void sorthem::Bar::setMark(std::string mark) {
     if (mark != "") {
         m_mark = mark;
         m_with_mark = true;
@@ -42,7 +40,7 @@ void Bar::setMark(std::string mark) {
     }
 }
 
-void Bar::setState(Bar::state state) {
+void sorthem::Bar::setState(Bar::state state) {
     if (m_with_mark) return;
 
     m_state = state;
@@ -72,7 +70,7 @@ void Bar::setState(Bar::state state) {
     }
 }
 
-void Bar::refreshState() {
+void sorthem::Bar::refreshState() {
     if (m_with_mark) return;
 
     switch (m_state) {
@@ -100,8 +98,6 @@ void Bar::refreshState() {
     }
 }
 
-void Bar::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void sorthem::Bar::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(m_shape, states);
-}
-
 }

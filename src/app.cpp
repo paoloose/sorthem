@@ -5,9 +5,7 @@
 #include <thread>
 #include <sorthem/app.h>
 
-namespace sorthem {
-
-SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
+sorthem::SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
     m_window(),
     m_graph(&m_window.getView()),
     m_algorithm()
@@ -25,7 +23,7 @@ SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
     m_algorithm.spawnThread(&m_graph, m_shared_state);
 }
 
-void SorthemApp::mainLoop() {
+void sorthem::SorthemApp::mainLoop() {
     float dt;
     while (m_window.isOpen()) {
         dt = m_clock.restart().asSeconds();
@@ -45,7 +43,7 @@ void SorthemApp::mainLoop() {
     }
 }
 
-void SorthemApp::handleEvent() {
+void sorthem::SorthemApp::handleEvent() {
     if (m_event.type == sf::Event::Closed) {
         m_window.close();
         exit(0);
@@ -91,6 +89,4 @@ void SorthemApp::handleEvent() {
             // non implemented yet
         }
     }
-}
-
 }

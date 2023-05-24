@@ -13,6 +13,8 @@
 
 namespace sorthem {
 
+sf::Int16 sinewave(float frequency, float amplitude, float time);
+
 class SortingAudio : public sf::SoundStream {
     float m_frequency;
     float m_wave_length;

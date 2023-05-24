@@ -1,12 +1,10 @@
 #include <sorthem/algorithm.h>
 
-namespace sorthem {
-
-Algorithm::Algorithm() : m_operations(), m_sorting_thread() {
+sorthem::Algorithm::Algorithm() : m_operations(), m_sorting_thread() {
     m_operations.reserve(OPERATIONS_RESERVED_SIZE);
 }
 
-void Algorithm::loadOperationsFromStdin() {
+void sorthem::Algorithm::loadOperationsFromStdin() {
     /* open program */
     std::string operation;
     while (std::getline(std::cin, operation)) {
@@ -14,7 +12,7 @@ void Algorithm::loadOperationsFromStdin() {
     }
 }
 
-void Algorithm::sortingThread(Graph* graph, SharedState& shared_state) {
+void sorthem::Algorithm::sortingThread(Graph* graph, SharedState& shared_state) {
     while (true) {
         std::size_t operation_index = shared_state.getOperationIndex();
         if (shared_state.isPaused()) {
@@ -38,12 +36,10 @@ void Algorithm::sortingThread(Graph* graph, SharedState& shared_state) {
     }
 }
 
-void Algorithm::spawnThread(Graph* graph, SharedState& shared_state) {
+void sorthem::Algorithm::spawnThread(Graph* graph, SharedState& shared_state) {
     m_sorting_thread = std::thread(
         &Algorithm::sortingThread, this,
         graph, std::ref(shared_state)
     );
     m_sorting_thread.detach();
-}
-
 }

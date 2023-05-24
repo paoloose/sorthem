@@ -5,13 +5,11 @@
 #include <cstring>
 #include <sorthem/ui/graph.h>
 
-namespace sorthem {
-
-Graph::Graph(const sf::View* win_view) :
+sorthem::Graph::Graph(const sf::View* win_view) :
     m_win_view(win_view)
 { }
 
-void Graph::execute(std::string operation) {
+void sorthem::Graph::execute(std::string operation) {
     if (operation.empty()) return;
     std::istringstream iss(operation);
     std::string command;
@@ -96,7 +94,7 @@ void Graph::execute(std::string operation) {
     }
 }
 
-void Graph::loadRectsValues() {
+void sorthem::Graph::loadRectsValues() {
     size_t count = m_bars.size();
     float win_height = m_win_view->getSize().y;
     float rects_width = m_win_view->getSize().x / count;
@@ -107,7 +105,7 @@ void Graph::loadRectsValues() {
     }
 }
 
-void Graph::resize(sf::Vector2f old_win_size, sf::Vector2f new_win_size) {
+void sorthem::Graph::resize(sf::Vector2f old_win_size, sf::Vector2f new_win_size) {
     size_t count = m_bars.size();
     if (count == 0) return;
     float new_width = new_win_size.x / count;
@@ -119,26 +117,26 @@ void Graph::resize(sf::Vector2f old_win_size, sf::Vector2f new_win_size) {
     }
 }
 
-void Graph::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void sorthem::Graph::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     for (auto& bar : m_bars) {
         target.draw(bar, states);
     }
 }
 
-void Graph::resetBarStates() {
+void sorthem::Graph::resetBarStates() {
     for (auto& bar : m_bars) {
         bar.setState(Bar::state::Iddle);
     }
     loadRectsValues();
 }
 
-void Graph::refreshBarStates() {
+void sorthem::Graph::refreshBarStates() {
     for (auto& bar : m_bars) {
         bar.refreshState();
     }
 }
 
-void Graph::finishAnimation() {
+void sorthem::Graph::finishAnimation() {
     bool is_sorted = true;
 
     for (size_t i = 0; i < m_bars.size() - 1; i++) {
@@ -160,7 +158,7 @@ void Graph::finishAnimation() {
     }
 }
 
-void Graph::loadArrayDataFromStdin() {
+void sorthem::Graph::loadArrayDataFromStdin() {
     char buffer[256];
     // The string where the complete array representation will be loaded
     std::string str_arr;
@@ -235,7 +233,7 @@ void Graph::loadArrayDataFromStdin() {
 
 /* Sorting operations */
 
-void Graph::swap(size_t index_a, size_t index_b) {
+void sorthem::Graph::swap(size_t index_a, size_t index_b) {
     size_t bars_num = m_bars.size();
     if (index_a >= bars_num || index_b >= bars_num) {
         throw std::runtime_error("swap: out of range");
@@ -254,7 +252,7 @@ void Graph::swap(size_t index_a, size_t index_b) {
     std::swap(bar_a, bar_b);
 }
 
-void Graph::compare(size_t index_a, size_t index_b) {
+void sorthem::Graph::compare(size_t index_a, size_t index_b) {
     size_t bars_num = m_bars.size();
     if (index_a >= bars_num || index_b >= bars_num) {
         throw std::runtime_error("compare: out of range");
@@ -268,7 +266,7 @@ void Graph::compare(size_t index_a, size_t index_b) {
     bar_b.setState(Bar::state::Comparing);
 }
 
-void Graph::set(size_t index, bar_height_t value) {
+void sorthem::Graph::set(size_t index, bar_height_t value) {
     size_t bars_num = m_bars.size();
     if (index >= bars_num) {
         throw std::runtime_error("set: out of range");
@@ -283,7 +281,7 @@ void Graph::set(size_t index, bar_height_t value) {
     bar.setState(Bar::state::Setting);
 }
 
-void Graph::get(size_t index) {
+void sorthem::Graph::get(size_t index) {
     size_t bars_num = m_bars.size();
     if (index >= bars_num) {
         throw std::runtime_error("get: out of range");
@@ -292,7 +290,7 @@ void Graph::get(size_t index) {
     m_bars[index].setState(Bar::state::Getting);
 }
 
-void Graph::set_mark(size_t index, std::string mark) {
+void sorthem::Graph::set_mark(size_t index, std::string mark) {
     size_t bars_num = m_bars.size();
     if (index >= bars_num) {
         throw std::runtime_error("set_mark: out of range");
@@ -303,6 +301,4 @@ void Graph::set_mark(size_t index, std::string mark) {
     }
     // Just colorize the bar
     m_bars[index].setMark(mark);
-}
-
 }

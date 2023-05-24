@@ -1,5 +1,7 @@
 #include "sorthem/sound/sorting_audio.h"
 
+namespace sorthem {
+
 sf::Int16 sinewave(float frequency, float amplitude, float time) {
     double cycles = time * frequency;
     double rad = time * frequency * 2 * M_PI;
@@ -44,4 +46,6 @@ bool SortingAudio::onGetData(sf::SoundStream::Chunk &data) {
 
 void SortingAudio::onSeek(sf::Time timeOffset) {
     m_time = timeOffset.asSeconds();
+}
+
 }

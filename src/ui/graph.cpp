@@ -5,6 +5,8 @@
 #include <cstring>
 #include "sorthem/ui/graph.h"
 
+namespace sorthem {
+
 Graph::Graph(const sf::View* win_view) :
     m_win_view(win_view)
 { }
@@ -301,4 +303,6 @@ void Graph::set_mark(size_t index, std::string mark) {
     }
     // Just colorize the bar
     m_bars[index].setMark(mark);
+}
+
 }

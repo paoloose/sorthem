@@ -1,5 +1,7 @@
 #include "sorthem/shared_state.h"
 
+namespace sorthem {
+
 bool SharedState::isPaused() const {
     std::lock_guard<std::mutex> lock(m_mutex);
     return m_paused;
@@ -43,4 +45,6 @@ std::size_t SharedState::getOperationIndex() const {
 void SharedState::setOperationIndex(std::size_t index) {
     std::lock_guard<std::mutex> lock(m_mutex);
     m_operation_index = index;
+}
+
 }

@@ -2,6 +2,8 @@
 #include <iostream>
 #include "sorthem/ui/bar.h"
 
+namespace sorthem {
+
 Bar::Bar() : m_shape(), m_state(Bar::state::Iddle) {
     m_shape.setFillColor(Bar::default_color);
 }
@@ -100,4 +102,6 @@ void Bar::refreshState() {
 
 void Bar::draw(sf::RenderTarget& target, sf::RenderStates states) const {
     target.draw(m_shape, states);
+}
+
 }

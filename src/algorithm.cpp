@@ -1,5 +1,7 @@
 #include "sorthem/algorithm.h"
 
+namespace sorthem {
+
 Algorithm::Algorithm() : m_operations(), m_sorting_thread() {
     m_operations.reserve(OPERATIONS_RESERVED_SIZE);
 }
@@ -43,4 +45,6 @@ void Algorithm::spawnThread(Graph* graph, SharedState& shared_state) {
         graph, std::ref(shared_state)
     );
     m_sorting_thread.detach();
+}
+
 }

@@ -5,13 +5,13 @@
 #include "sorthem/config.h"
 
 int main(void) {
-    exit_if_bad_usage();
+    sorthem::exit_if_bad_usage();
 
-    SorthemApp sorthem(
+    sorthem::SorthemApp app(
         sf::VideoMode(INITIAL_WIN_WIDTH, INITIAL_WIN_HEIGHT),
         sf::Style::Default
     );
-    sorthem.mainLoop();
+    app.mainLoop();
 
     return 0;
 }

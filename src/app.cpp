@@ -5,6 +5,8 @@
 #include <thread>
 #include "sorthem/app.h"
 
+namespace sorthem {
+
 SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
     m_window(),
     m_graph(&m_window.getView()),
@@ -89,4 +91,6 @@ void SorthemApp::handleEvent() {
             // non implemented yet
         }
     }
+}
+
 }

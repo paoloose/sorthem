@@ -1,7 +1,7 @@
 .vscode/settings.json
 program
 tests
-sorthem
+dist/
 build/
 *.o
 *.out

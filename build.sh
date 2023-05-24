@@ -8,7 +8,7 @@ build_dir="./dist"
 libs="-lsfml-graphics -lsfml-window -lsfml-system -lsfml-audio"
 # if you installed SFML in a non standard path
 linker_dir=""
-include="-I./src/include"
+include="-I./include"
 
 case "$(uname -s)" in MINGW*)
     # for windows

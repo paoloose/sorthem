@@ -1,4 +1,4 @@
-#include "sound/SortingAudio.h"
+#include "sorthem/sound/sorting_audio.h"
 
 sf::Int16 sinewave(float frequency, float amplitude, float time) {
     double cycles = time * frequency;

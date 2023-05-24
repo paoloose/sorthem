@@ -1,4 +1,4 @@
-#include "SharedState.h"
+#include "sorthem/shared_state.h"
 
 bool SharedState::isPaused() const {
     std::lock_guard<std::mutex> lock(m_mutex);

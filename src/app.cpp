@@ -3,7 +3,7 @@
 #include <sstream>
 #include <chrono>
 #include <thread>
-#include "App.h"
+#include "sorthem/app.h"
 
 SorthemApp::SorthemApp(sf::VideoMode win_mode, sf::Uint32 style) :
     m_window(),

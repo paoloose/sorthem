@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "Bar.h"
+#include "sorthem/ui/bar.h"
 
 Bar::Bar() : m_shape(), m_state(Bar::state::Iddle) {
     m_shape.setFillColor(Bar::default_color);

@@ -1,4 +1,4 @@
-#include "Algorithm.h"
+#include "sorthem/algorithm.h"
 
 Algorithm::Algorithm() : m_operations(), m_sorting_thread() {
     m_operations.reserve(OPERATIONS_RESERVED_SIZE);

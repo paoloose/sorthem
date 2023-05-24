@@ -3,7 +3,7 @@
 #include <sstream>
 #include <chrono>
 #include <thread>
-#include "sorthem/app.h"
+#include <sorthem/app.h>
 
 namespace sorthem {
 

@@ -1,8 +1,8 @@
 #include <string>
 #include <SFML/Graphics.hpp>
-#include "sorthem/app.h"
-#include "sorthem/cli/helpers.h"
-#include "sorthem/config.h"
+#include <sorthem/app.h>
+#include <sorthem/cli/helpers.h>
+#include <sorthem/config.h>
 
 int main(void) {
     sorthem::exit_if_bad_usage();

@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <vector>
 #include <string>
-#include "sorthem/ui/bar.h"
+#include <sorthem/ui/bar.h>
 
 typedef float bar_height_t;
 #define STR_TO_BAR_HEIGHT_T(str) std::stof((str))

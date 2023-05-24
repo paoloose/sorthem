@@ -2,9 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <mutex>
-#include "sorthem/ui/graph.h"
-#include "sorthem/algorithm.h"
-#include "sorthem/shared_state.h"
+#include <sorthem/ui/graph.h>
+#include <sorthem/algorithm.h>
+#include <sorthem/shared_state.h>
 
 namespace sorthem {
 

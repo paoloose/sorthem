@@ -3,7 +3,7 @@
 #include <sstream>
 #include <string>
 #include <cstring>
-#include "sorthem/ui/graph.h"
+#include <sorthem/ui/graph.h>
 
 namespace sorthem {
 

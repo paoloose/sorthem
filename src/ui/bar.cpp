@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
-#include "sorthem/ui/bar.h"
+#include <sorthem/ui/bar.h>
 
 namespace sorthem {
 

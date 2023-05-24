@@ -1,4 +1,4 @@
-#include "sorthem/algorithm.h"
+#include <sorthem/algorithm.h>
 
 namespace sorthem {
 

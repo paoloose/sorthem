@@ -4,9 +4,9 @@
 #include <vector>
 #include <thread>
 #include <iostream>
-#include "sorthem/ui/graph.h"
-#include "sorthem/shared_state.h"
-#include "config.h"
+#include <sorthem/ui/graph.h>
+#include <sorthem/shared_state.h>
+#include <sorthem/config.h>
 
 // initial reserved size for the m_operations vector
 #define OPERATIONS_RESERVED_SIZE 1024

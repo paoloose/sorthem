@@ -4,6 +4,7 @@
 #include <vector>
 #include <string>
 #include <sorthem/ui/bar.h>
+#include <sorthem/config.h>
 
 #define STR_TO_BAR_HEIGHT_T(str) std::stof((str))
 

@@ -4,6 +4,7 @@
 #include <string>
 #include <cstring>
 #include <sorthem/ui/graph.h>
+#include <sorthem/config.h>
 
 sorthem::Graph::Graph(const sf::View* win_view) :
     m_win_view(win_view)

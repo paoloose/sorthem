@@ -12,8 +12,6 @@ namespace sorthem {
 
 class Graph : public sf::Drawable {
     std::vector<Bar> m_bars;
-    // Initial data loaded on startup
-    std::vector<bar_height_t> m_initial_data;
     // Points to the view of the window
     const sf::View* m_win_view;
     bar_height_t m_max_height;

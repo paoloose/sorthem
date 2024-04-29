@@ -100,7 +100,7 @@ void sorthem::Graph::loadRectsValues() {
     float win_height = m_win_view->getSize().y;
     float rects_width = m_win_view->getSize().x / count;
     for (std::size_t i = 0; i < count; i++) {
-        float height = win_height * m_initial_data[i] / m_max_height;
+        float height = win_height * m_bars[i].getValue() / m_max_height;
         m_bars[i].setSize({ rects_width, height });
         m_bars[i].setPosition({ i * rects_width, win_height - height });
     }
@@ -209,27 +209,23 @@ void sorthem::Graph::loadArrayDataFromStdin() {
     // print for debugging purposes
     // std::cout << "data: " << str_arr << "\n";
 
+    bar_height_t max = -1;
+
     while (iss >> str_num) {
         try {
             bar_height_t num = STR_TO_BAR_HEIGHT_T(str_num);
-            m_initial_data.push_back(num);
+            if (num > max) max = num;
+            m_bars.emplace_back(num);
         }
         catch (...) {
             // TODO: handle exceptions better (with UI)
-            throw std::runtime_error("load: bad number: " + str_num + ".");
+            throw std::runtime_error("load: bad number: " + str_num);
         }
     }
 
-    /* Refresh the bars */
-
-    m_max_height = *std::max_element(
-        m_initial_data.begin(),
-        m_initial_data.end()
-    );
-    size_t count = m_initial_data.size();
     // resize the vector to fit the new loaded data
-    m_bars.resize(count);
-    loadRectsValues();
+    m_max_height = max;
+    loadRectsValues(); // call once
 }
 
 /* Sorting operations */

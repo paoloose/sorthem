@@ -1,9 +1,14 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <sorthem/ui/bar.h>
+#include <sorthem/config.h>
 
-sorthem::Bar::Bar() : m_shape(), m_state(Bar::state::Iddle) {
+sorthem::Bar::Bar(bar_height_t value) : m_shape(), m_state(Bar::state::Iddle), m_value(value) {
     m_shape.setFillColor(Bar::default_color);
+}
+
+bar_height_t sorthem::Bar::getValue() {
+    return m_value;
 }
 
 void sorthem::Bar::setSize(sf::Vector2f new_size) {

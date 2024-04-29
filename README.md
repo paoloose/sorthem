@@ -87,9 +87,23 @@ You have a variety of examples in the [examples](./examples/) directory (WIP).
 
   usage: `get i`
 
-- **set**: for setting an index to a value
+- **set**: for setting a value at some index
 
-  usage: `set i value`, where `0 <= value <= max_value`
+  usage: `set i value`
+
+  where `0 <= value <= max_value`, otherwise panics
+
+- **context**: makes future index ops relative to this context
+
+  usage: `context start end`
+
+  where `start`and `end` fall within the array's bounds
+
+- **pop**: pops the last context
+
+  usage: `pop`
+
+  panics if there are no contexts to pop
 
 `i` and `j` must be valid zero-based indexes.
 
@@ -139,6 +153,7 @@ cat examples/test | dist/sorthem
 ## Semantic Colors
 
 - ![#ffffff](https://placehold.co/15x15/ffffff/ffffff.png) `#ffffff`: an iddle bar
+- ![#e7ccff](https://placehold.co/15x15/e7ccff/e7ccff.png) `#ffffff`: iddle bar within a context
 - ![#f33232](https://placehold.co/15x15/f33232/f33232.png) `#f33232`: two bars being swaped
 - ![#9b54c3](https://placehold.co/15x15/9b54c3/9b54c3.png) `#9b54c3`: getting the value of the bar
 - ![#2d43db](https://placehold.co/15x15/2d43db/2d43db.png) `#2d43db`: setting the value of the bar

@@ -16,9 +16,10 @@ class Bar : public sf::Drawable {
   public:
     inline static const sf::Color default_color   = sf::Color::White;
     inline static const sf::Color swapping_color  = sf::Color(0xF33232FF); // red
-    inline static const sf::Color getting_color   = sf::Color(0xF33232FF); // red
-    inline static const sf::Color setting_color   = sf::Color(0xE79933FF); // orange
+    inline static const sf::Color getting_color   = sf::Color(0x9B54C3FF); // purple
+    inline static const sf::Color setting_color   = sf::Color(0x2D43DBFF); // blue
     inline static const sf::Color comparing_color = sf::Color(0xE79933FF); // orange
+
     Bar();
 
     void setSize(sf::Vector2f new_size);

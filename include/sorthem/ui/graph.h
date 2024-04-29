@@ -74,8 +74,8 @@ class Graph : public sf::Drawable {
     */
     void loadArrayDataFromStdin();
 
+  private:
     /* Basic sorting operations (documentend on the README.md) */
-
     void swap(size_t index_a, size_t index_b);
     void compare(size_t index_a, size_t index_b);
     void set(size_t index, bar_height_t absolute_value);
@@ -83,6 +83,8 @@ class Graph : public sf::Drawable {
     void set_mark(size_t index, std::string mark);
     void pushContext(size_t from, size_t to);
     void popContext();
+
+    void paintContext();
 };
 
 }

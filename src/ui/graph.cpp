@@ -331,6 +331,7 @@ void sorthem::Graph::pushContext(size_t start, size_t end) {
         m_context_stack.emplace(std::make_pair(offset + start, offset + end));
     }
     m_bars.set_context(m_context_stack.top());
+    paintContext();
 }
 
 void sorthem::Graph::popContext() {
@@ -341,9 +342,28 @@ void sorthem::Graph::popContext() {
     m_context_stack.pop();
 
     if (m_context_stack.empty()) {
-        m_bars.clear_context();
+        m_bars.fit_context();
     }
     else {
         m_bars.set_context(m_context_stack.top());
+    }
+    paintContext();
+}
+
+void sorthem::Graph::paintContext() {
+    if (m_context_stack.empty()) {
+        for (auto& bar : m_bars.underlying()) {
+            bar.setState(Bar::state::Iddle);
+        }
+        return;
+    }
+
+    for (size_t i = 0; i < m_bars.underlying().size(); i++) {
+        if (i >= m_bars.get_context().first && i <= m_bars.get_context().second) {
+            m_bars.underlying()[i].setState(Bar::state::InContext);
+        }
+        else {
+            m_bars.underlying()[i].setState(Bar::state::Iddle);
+        }
     }
 }

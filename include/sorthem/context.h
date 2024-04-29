@@ -17,6 +17,7 @@ class ContextVector {
     ContextVector() : m_context(0, 0) { }
     ContextVector(std::vector<T> data) : m_data(data) { }
 
+    context_t get_context() { return m_context; }
     void set_context(context_t context) { m_context = context; }
     void clear_context() { m_context = {0, m_data.size() - 1}; }
     void fit_context() { clear_context(); }

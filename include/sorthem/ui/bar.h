@@ -16,6 +16,7 @@ class Bar : public sf::Drawable {
     std::string m_mark;
   public:
     inline static const sf::Color default_color   = sf::Color::White;
+    inline static const sf::Color context_color   = sf::Color(0xe7ccffFF);
     inline static const sf::Color swapping_color  = sf::Color(0xF33232FF); // red
     inline static const sf::Color getting_color   = sf::Color(0x9B54C3FF); // purple
     inline static const sf::Color setting_color   = sf::Color(0x2D43DBFF); // blue
@@ -45,6 +46,7 @@ class Bar : public sf::Drawable {
         Getting,
         Setting,
         Comparing,
+        InContext,
 
         Count
     };

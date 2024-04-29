@@ -46,6 +46,10 @@ void sorthem::Bar::setState(Bar::state state) {
 
     m_state = state;
     switch (m_state) {
+    case Bar::state::InContext: {
+        m_shape.setFillColor(Bar::context_color);
+        break;
+    }
     case Bar::state::Iddle: {
         m_shape.setFillColor(Bar::default_color);
         break;

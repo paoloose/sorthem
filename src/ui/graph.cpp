@@ -323,7 +323,13 @@ void sorthem::Graph::pushContext(size_t start, size_t end) {
         throw std::runtime_error("context: start > end");
     }
 
-    m_context_stack.emplace(std::make_pair(start, end));
+    if (m_context_stack.empty()) {
+        m_context_stack.emplace(std::make_pair(start, end));
+    }
+    else {
+        size_t offset = m_context_stack.top().first;
+        m_context_stack.emplace(std::make_pair(offset + start, offset + end));
+    }
     m_bars.set_context(m_context_stack.top());
 }
 

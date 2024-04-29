@@ -75,21 +75,9 @@ void sorthem::Bar::refreshState() {
     if (m_with_mark) return;
 
     switch (m_state) {
-    case Bar::state::Iddle: {
-        break;
-    }
-    case Bar::state::Swapping: {
-        setState(Bar::state::Iddle);
-        break;
-    }
-    case Bar::state::Getting: {
-        setState(Bar::state::Iddle);
-        break;
-    }
-    case Bar::state::Setting: {
-        setState(Bar::state::Iddle);
-        break;
-    }
+    case Bar::state::Swapping:
+    case Bar::state::Getting:
+    case Bar::state::Setting:
     case Bar::state::Comparing: {
         setState(Bar::state::Iddle);
         break;

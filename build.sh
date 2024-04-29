@@ -12,9 +12,15 @@ include="-I./include"
 
 case "$(uname -s)" in MINGW*)
     # for windows
-    SFML_path='C:\SFML-2.5.1'
+    SFML_path='C:\SFML-2.6.1'
     include="$include -I$SFML_path\include"
     linker_dir="-L$SFML_path\lib"
+esac
+
+case "$(uname -s)" in Darwin*)
+    SFML_path='/opt/homebrew/Cellar/sfml/2.6.1'
+    include="$include -I$SFML_path/include"
+    linker_dir="-L$SFML_path/lib"
 esac
 
 units=$(find ./src -name "*.cpp")

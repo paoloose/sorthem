@@ -14,7 +14,6 @@ class Bar : public sf::Drawable {
     sorthem::Bar::state m_state;
     bool m_with_mark = false;
     std::string m_mark;
-    bar_height_t m_value;
   public:
     inline static const sf::Color default_color   = sf::Color::White;
     inline static const sf::Color swapping_color  = sf::Color(0xF33232FF); // red
@@ -22,9 +21,7 @@ class Bar : public sf::Drawable {
     inline static const sf::Color setting_color   = sf::Color(0x2D43DBFF); // blue
     inline static const sf::Color comparing_color = sf::Color(0xE79933FF); // orange
 
-    Bar(bar_height_t value);
-
-    bar_height_t getValue();
+    Bar();
 
     void setSize(sf::Vector2f new_size);
     sf::Vector2f getSize();

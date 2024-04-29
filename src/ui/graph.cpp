@@ -20,7 +20,7 @@ void sorthem::Graph::execute(std::string operation) {
         long int a, b;
         iss >> a >> b;
         if (iss.fail()) {
-            throw std::runtime_error("error executing swap command: " + operation);
+            throw std::runtime_error("error: bad syntax. expected: swap <i> <j>, got: " + operation);
         }
         // check for index out of range
         if (a < 0 || b < 0) {
@@ -33,7 +33,7 @@ void sorthem::Graph::execute(std::string operation) {
         long int a, b;
         iss >> a >> b;
         if (iss.fail()) {
-            throw std::runtime_error("error executing compare command: " + operation);
+            throw std::runtime_error("error: bad syntax. expected: compare <i> <j>, got: " + operation);
         }
         // check for index out of range
         if (a < 0 || b < 0) {
@@ -46,7 +46,7 @@ void sorthem::Graph::execute(std::string operation) {
         long int a, b;
         iss >> a >> b;
         if (iss.fail()) {
-            throw std::runtime_error("error executing set command: " + operation);
+            throw std::runtime_error("error: bad syntax. expected: set <i> <value>, got: " + operation);
         }
         // check for index out of range
         if (a < 0 || b < 0) {
@@ -82,13 +82,18 @@ void sorthem::Graph::execute(std::string operation) {
         }
 
         iss >> mark;
-        for (auto& bar : m_bars) {
-            if (bar.getMark() == mark) {
-                bar.setMark("");
-            }
-        }
-
         this->set_mark(static_cast<size_t>(a), mark);
+    }
+    else if (command == "context") {
+        long int start, end;
+        iss >> start >> end;
+        if (iss.fail()) {
+            throw std::runtime_error("error: bad syntax. expected: context <start> <end>, got: " + operation);
+        }
+        this->pushContext(static_cast<size_t>(start), static_cast<size_t>(end));
+    }
+    else if (command == "pop") {
+        this->popContext();
     }
     else {
         std::cout << "unknown operation: " << operation << "\n";
@@ -100,18 +105,19 @@ void sorthem::Graph::loadRectsValues() {
     float win_height = m_win_view->getSize().y;
     float rects_width = m_win_view->getSize().x / count;
     for (std::size_t i = 0; i < count; i++) {
-        float height = win_height * m_bars[i].getValue() / m_max_height;
+        float height = win_height * m_initial_data[i] / m_max_height;
         m_bars[i].setSize({ rects_width, height });
         m_bars[i].setPosition({ i * rects_width, win_height - height });
     }
 }
 
+// TODO: calling this function on every resize event is not efficient
 void sorthem::Graph::resize(sf::Vector2f old_win_size, sf::Vector2f new_win_size) {
-    size_t count = m_bars.size();
+    size_t count = m_bars.underlying().size();
     if (count == 0) return;
     float new_width = new_win_size.x / count;
     for (std::size_t i = 0; i < count; i++) {
-        Bar& rect = m_bars[i];
+        Bar& rect = m_bars.underlying()[i];
         float new_heigth = new_win_size.y * rect.getSize().y / old_win_size.y;
         rect.setSize({ new_width, new_heigth });
         rect.setPosition({ i * new_width, new_win_size.y - new_heigth });
@@ -119,20 +125,22 @@ void sorthem::Graph::resize(sf::Vector2f old_win_size, sf::Vector2f new_win_size
 }
 
 void sorthem::Graph::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-    for (auto& bar : m_bars) {
+    for (auto& bar : m_bars.underlying()) {
         target.draw(bar, states);
     }
 }
 
 void sorthem::Graph::resetBarStates() {
-    for (auto& bar : m_bars) {
+    m_bars.clear_context();
+    m_context_stack = std::stack<context_t>();
+    for (auto& bar : m_bars.underlying()) {
         bar.setState(Bar::state::Iddle);
     }
     loadRectsValues();
 }
 
 void sorthem::Graph::refreshBarStates() {
-    for (auto& bar : m_bars) {
+    for (auto& bar : m_bars.underlying()) {
         bar.refreshState();
     }
 }
@@ -148,12 +156,12 @@ void sorthem::Graph::finishAnimation() {
     }
 
     if (is_sorted) {
-        for (auto& bar : m_bars) {
+        for (auto& bar : m_bars.underlying()) {
             bar.setColor(sf::Color::Green);
         }
     }
     else {
-        for (auto& bar : m_bars) {
+        for (auto& bar : m_bars.underlying()) {
             bar.setColor(sf::Color::Red);
         }
     }
@@ -215,7 +223,7 @@ void sorthem::Graph::loadArrayDataFromStdin() {
         try {
             bar_height_t num = STR_TO_BAR_HEIGHT_T(str_num);
             if (num > max) max = num;
-            m_bars.emplace_back(num);
+            m_initial_data.push_back(num);
         }
         catch (...) {
             // TODO: handle exceptions better (with UI)
@@ -223,7 +231,7 @@ void sorthem::Graph::loadArrayDataFromStdin() {
         }
     }
 
-    // resize the vector to fit the new loaded data
+    m_bars.resize(m_initial_data.size());
     m_max_height = max;
     loadRectsValues(); // call once
 }
@@ -288,6 +296,13 @@ void sorthem::Graph::get(size_t index) {
 }
 
 void sorthem::Graph::set_mark(size_t index, std::string mark) {
+    // Clear all the marks
+    for (auto& bar : m_bars.underlying()) {
+        if (bar.getMark() == mark) {
+            bar.setMark("");
+        }
+    }
+
     size_t bars_num = m_bars.size();
     if (index >= bars_num) {
         throw std::runtime_error("set_mark: out of range");
@@ -298,4 +313,31 @@ void sorthem::Graph::set_mark(size_t index, std::string mark) {
     }
     // Just colorize the bar
     m_bars[index].setMark(mark);
+}
+
+void sorthem::Graph::pushContext(size_t start, size_t end) {
+    if (start < 0 || end < 0) {
+        throw std::runtime_error("context: out of range");
+    }
+    if (start > end) {
+        throw std::runtime_error("context: start > end");
+    }
+
+    m_context_stack.emplace(std::make_pair(start, end));
+    m_bars.set_context(m_context_stack.top());
+}
+
+void sorthem::Graph::popContext() {
+    if (m_context_stack.empty()) {
+        throw std::runtime_error("pop: attempt to pop with no active context");
+    }
+
+    m_context_stack.pop();
+
+    if (m_context_stack.empty()) {
+        m_bars.clear_context();
+    }
+    else {
+        m_bars.set_context(m_context_stack.top());
+    }
 }

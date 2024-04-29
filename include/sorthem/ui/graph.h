@@ -2,7 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <stack>
 #include <string>
+#include <sorthem/context.h>
 #include <sorthem/ui/bar.h>
 #include <sorthem/config.h>
 
@@ -11,10 +13,13 @@
 namespace sorthem {
 
 class Graph : public sf::Drawable {
-    std::vector<Bar> m_bars;
+    sorthem::ContextVector<Bar> m_bars;
+    std::vector<bar_height_t> m_initial_data;
     // Points to the view of the window
     const sf::View* m_win_view;
     bar_height_t m_max_height;
+    std::stack<context_t> m_context_stack;
+
   public:
     Graph(const sf::View* win_view);
 
@@ -76,6 +81,8 @@ class Graph : public sf::Drawable {
     void set(size_t index, bar_height_t absolute_value);
     void get(size_t index);
     void set_mark(size_t index, std::string mark);
+    void pushContext(size_t from, size_t to);
+    void popContext();
 };
 
 }
